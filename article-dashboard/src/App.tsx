@@ -48,7 +48,7 @@ function App() {
             <p><strong>Scraped at:</strong> {new Date(article.scraped_at).toLocaleString()}</p>
 
             {article.top_image && (
-              <img src={article.top_image} alt="top image" style={{ width: "100%", maxHeight: "300px", objectFit: "cover", marginBottom: "1rem" }} />
+              <img src={article.top_image} alt="top image" style={{ maxHeight: "300px", objectFit: "contain", marginBottom: "1rem" }} />
             )}
 
             <p><strong>Intro:</strong> {article.intro}</p>
