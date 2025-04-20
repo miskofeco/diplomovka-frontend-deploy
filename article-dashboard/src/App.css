@@ -1,0 +1,595 @@
+/* Základné nastavenia a premenné */
+:root {
+  --primary-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  --background-color: #f8f9fa; /* Veľmi svetlá šedá */
+  --card-background: #ffffff;
+  --text-color: #212529;       /* Tmavšia pre lepší kontrast */
+  --text-color-secondary: #6c757d; /* Stredne šedá */
+  --accent-color: #0077cc;      /* Moderná modrá */
+  --accent-color-hover: #005fa3;
+  --border-color: #dee2e6;
+  --shadow-color: rgba(0, 0, 0, 0.08);
+  --card-border-radius: 12px; /* Väčšie zaoblenie */
+  --button-border-radius: 8px;
+  --header-background: #ffffff; /* Biela hlavička */
+  --header-shadow: rgba(0, 0, 0, 0.05);
+}
+
+/* Globálny reset a základné štýly */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--primary-font);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+/* Hlavný kontajner aplikácie */
+.App {
+  /* max-width už nie je potrebný, lebo header je na celú šírku */
+  /* a grid sa centruje pomocou paddingu */
+  width: 100%;
+}
+
+/* Hlavička aplikácie */
+.app-header {
+  background-color: var(--header-background);
+  padding: 1.5rem 2rem; /* Viac paddingu */
+  box-shadow: 0 2px 4px var(--header-shadow);
+  display: flex; /* Umožní zarovnanie prvkov */
+  justify-content: space-between; /* Nadpis vľavo, tlačidlo vpravo */
+  align-items: center; /* Vertikálne centrovanie */
+  flex-wrap: wrap; /* Zalomenie na menších obrazovkách */
+  gap: 1rem; /* Medzera medzi nadpisom a tlačidlom pri zalomení */
+}
+
+.app-header h1 {
+  font-size: 1.8rem; /* Trochu menší nadpis */
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0; /* Odstránenie predvoleného marginu */
+  line-height: 1.2;
+}
+
+/* Tlačidlo */
+.scrape-button {
+  padding: 10px 22px; /* Trochu väčšie */
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #fff;
+  background-color: var(--accent-color);
+  border: none;
+  border-radius: var(--button-border-radius);
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.1s ease;
+  white-space: nowrap; /* Zabráni zalomeniu textu tlačidla */
+}
+
+.scrape-button:hover {
+  background-color: var(--accent-color-hover);
+  box-shadow: 0 4px 8px rgba(0, 119, 204, 0.2); /* Jemný tieň pri hover */
+}
+
+.scrape-button:active {
+    transform: translateY(1px); /* Jemné stlačenie */
+}
+
+.scrape-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: var(--accent-color);
+  box-shadow: none;
+}
+
+/* Kontajner pre grid článkov */
+.article-grid-container {
+    padding: 0 2rem 2rem 2rem; /* Padding okolo gridu */
+    max-width: 1200px; /* Maximálna šírka pre grid */
+    margin: 0 auto; /* Centrovanie gridu */
+}
+
+/* Grid pre články */
+.article-grid {
+  display: grid;
+  /* Responzívne stĺpce: začne s jedným, potom 2, 3 atď. */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem; /* Väčšia medzera */
+}
+
+/* Karta článku */
+.article-card {
+  background-color: var(--card-background);
+  border-radius: var(--card-border-radius);
+  box-shadow: 0 4px 12px var(--shadow-color); /* Jemnejší tieň */
+  overflow: hidden; /* Oreže obrázok podľa zaoblenia */
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  display: flex; /* Umožní lepšie usporiadanie obsahu */
+  flex-direction: column; /* Obsah pod sebou */
+}
+
+.article-card:hover {
+  transform: translateY(-5px); /* Mierne nadvihnutie */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12); /* Výraznejší tieň */
+}
+
+/* Obrázok článku */
+.article-image {
+  width: 100%;
+  height: 180px; /* Fixná výška pre konzistentný vzhľad kariet */
+  object-fit: cover; /* Oreže obrázok, aby vyplnil priestor */
+  /* border-radius hore už netreba, lebo card má overflow: hidden */
+  background-color: #e9ecef; /* Svetlejší placeholder */
+  display: block; /* Odstráni medzeru pod obrázkom */
+}
+
+/* Obsah karty (text pod obrázkom) */
+.article-card-content {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 200px; /* Minimálna výška obsahu */
+}
+
+/* Nadpis článku v karte */
+.article-card h2 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: var(--text-color);
+  min-height: 2.6em; /* Približná výška 2 riadkov - môžeš upraviť */
+
+  /* --- Viacriadkové orezanie textu --- */
+  overflow: hidden; /* Skryje prebytočný text */
+  text-overflow: ellipsis; /* Pridá ... (nie vždy viditeľné pri line-clamp) */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Počet riadkov */
+  -webkit-box-orient: vertical;
+  /* display: -moz-box; /* Pre veľmi staré Firefox verzie - zvyčajne netreba */
+  /* -moz-box-orient: vertical; */
+  /* Poznámka: Štandardná vlastnosť 'line-clamp' ešte nie je široko podporovaná */
+}
+
+/* Metadáta článku (kategória, dátum) */
+.article-meta {
+  font-size: 0.85rem;
+  color: var(--text-color-secondary);
+  margin-top: auto; /* Posunie meta info na spodok karty */
+  padding-top: 1rem;
+}
+
+.article-meta strong {
+  color: var(--text-color);
+  font-weight: 500;
+  margin-right: 0.25rem;
+}
+
+.article-meta span {
+  margin-right: 1rem;
+}
+
+.article-meta span:last-child {
+  margin-right: 0;
+}
+
+/* Úvodný text článku (Intro) */
+.article-intro {
+  font-size: 0.9rem;
+  color: var(--text-color-secondary);
+  margin: 0.5rem 0 1rem 0;
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+
+/* Responzivita */
+@media (max-width: 768px) {
+  .app-header {
+    flex-direction: column; /* Nadpis a tlačidlo pod sebou */
+    align-items: center; /* Centrovanie */
+    padding: 1rem;
+  }
+
+  .header-controls {
+    width: 100%;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .app-header h1 {
+     font-size: 1.6rem;
+     margin-bottom: 1rem; /* Odstup pod nadpisom na mobile */
+  }
+
+  .category-filter,
+  .scrape-button {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .article-grid-container {
+    padding: 0 1rem 1rem 1rem; /* Menší padding okolo gridu */
+  }
+
+  .article-grid {
+    gap: 1.5rem; /* Menšia medzera */
+    /* Grid sa automaticky prispôsobí vďaka auto-fit a minmax */
+  }
+}
+
+@media (max-width: 480px) {
+   /* Na veľmi malých obrazovkách môže byť grid 1-stĺpcový vďaka minmax(280px) */
+   .article-card h2 {
+       font-size: 1.1rem;
+   }
+   .article-intro {
+       font-size: 0.85rem;
+   }
+}
+
+
+.article-detail-view {
+  max-width: 800px; /* Maximálna šírka pre detail */
+  margin: 2rem auto; /* Centrovanie s odstupom */
+  padding: 2rem;
+  background-color: var(--card-background); /* Podobné ako karta, ale širšie */
+  border-radius: var(--card-border-radius);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1); /* Trochu výraznejší tieň */
+  animation: fadeIn 0.5s ease-out; /* Jednoduchá animácia */
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.article-detail-view h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+  color: var(--text-color);
+}
+
+.detail-meta-info {
+  font-size: 0.9rem;
+  color: var(--text-color-secondary);
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.detail-meta-info strong {
+    color: var(--text-color);
+    font-weight: 500;
+    margin-right: 0.5rem; /* Malý odstup za tučným textom */
+}
+.detail-meta-info span + strong::before {
+    content: "|"; /* Oddeľovač medzi metadátami */
+    margin: 0 0.75rem;
+    color: var(--border-color);
+}
+
+
+.article-detail-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  max-height: 450px; /* Väčšia výška pre detail */
+  object-fit: cover;
+  border-radius: 8px;
+  margin: 0 auto 2rem auto; /* Centrovanie a odstup */
+  background-color: #e9ecef;
+  box-shadow: 0 4px 8px rgba(0,0,0, 0.1);
+}
+
+.article-detail-content strong { /* Nadpisy sekcií */
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+.article-detail-content p {
+  margin-bottom: 1.2rem;
+  color: var(--text-color);
+  font-size: 1rem;
+}
+
+.detail-source-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0 0;
+  font-size: 0.9rem;
+}
+
+.detail-source-list li {
+  margin-bottom: 0.5rem;
+}
+
+.detail-source-list a {
+  color: var(--accent-color);
+  text-decoration: none;
+  word-break: break-all;
+  transition: color 0.2s ease;
+}
+
+.detail-source-list a:hover {
+  color: var(--accent-color-hover);
+  text-decoration: underline;
+}
+
+.back-button {
+  display: inline-block; /* Inline block pre umiestnenie na riadku */
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding: 8px 18px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--accent-color);
+  background-color: transparent;
+  border: 1px solid var(--accent-color);
+  border-radius: var(--button-border-radius);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.back-button:hover {
+  background-color: var(--accent-color-hover);
+  color: #fff;
+  border-color: var(--accent-color-hover);
+}
+
+/* Responzivita pre detail */
+@media (max-width: 768px) {
+  .article-detail-view {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+  .article-detail-view h1 {
+    font-size: 1.7rem;
+  }
+}
+
+/* Add these new styles */
+.categories-filter {
+  position: sticky;
+  top: 0;
+  background-color: var(--background-color);
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--border-color);
+  z-index: 100;
+  margin-bottom: 2rem;
+}
+
+.categories-list {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.category-button {
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--button-border-radius);
+  background-color: white;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.category-button:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.category-button.active {
+  background-color: var(--accent-color);
+  color: white;
+  border-color: var(--accent-color);
+}
+
+.category-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Update the media queries */
+@media (max-width: 768px) {
+  .categories-filter {
+    padding: 1rem;
+  }
+  
+  .categories-list {
+    gap: 0.5rem;
+  }
+  
+  .category-button {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .categories-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .category-button {
+    flex: 1 1 auto;
+    min-width: calc(33.33% - 0.5rem);
+    text-align: center;
+  }
+}
+
+.political-orientation-container {
+  margin: 2rem 0;
+  padding: 1rem;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+.political-orientation-container h4 {
+  margin: 0 0 1rem 0;
+  text-align: center;
+}
+
+.orientation-bar {
+  height: 30px;
+  display: flex;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.orientation-segment {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.orientation-segment.left { background-color: #FF4D4D; }
+.orientation-segment.center-left { background-color: #FF9999; }
+.orientation-segment.neutral { background-color: #CCCCCC; }
+.orientation-segment.center-right { background-color: #99CCFF; }
+.orientation-segment.right { background-color: #3399FF; }
+
+.orientation-legend {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-right: 1rem;
+}
+
+.legend-item::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+  border-radius: 2px;
+}
+
+.legend-item.left::before { background-color: #FF4D4D; }
+.legend-item.center-left::before { background-color: #FF9999; }
+.legend-item.neutral::before { background-color: #CCCCCC; }
+.legend-item.center-right::before { background-color: #99CCFF; }
+.legend-item.right::before { background-color: #3399FF; }
+
+/* Source button styles */
+.source-button {
+  display: inline-block;
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  margin: 4px;
+  padding: 0;
+  text-decoration: none;
+  color: var(--text-color);
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.source-button:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+  border-color: var(--accent-color);
+}
+
+.source-content {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+}
+
+.source-logo {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.source-name {
+  margin-right: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.source-orientation-tag {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.1);
+  white-space: nowrap;
+}
+
+/* Source orientation colors */
+.source-orientation-tag.left { background-color: #FF4D4D; }
+.source-orientation-tag.center-left { background-color: #FF9999; }
+.source-orientation-tag.neutral { 
+  background-color: #CCCCCC; 
+  color: #333;
+}
+.source-orientation-tag.center-right { background-color: #99CCFF; }
+.source-orientation-tag.right { background-color: #3399FF; }
+
+/* Source button container */
+.source-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .source-button {
+    width: 100%;
+  }
+  
+  .source-content {
+    justify-content: space-between;
+  }
+  
+  .source-name {
+    flex: 1;
+    margin-right: 8px;
+  }
+}
+
+/* Political orientation styles */
+.orientation-summary {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: var(--text-color-secondary);
+}
+
+.orientation-summary strong {
+  color: var(--text-color);
+}
