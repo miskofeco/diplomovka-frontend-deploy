@@ -3,6 +3,7 @@ export interface Article {
   title: string
   intro: string
   summary: string
+  content: string
   url: string[]
   top_image: string
   category: string
