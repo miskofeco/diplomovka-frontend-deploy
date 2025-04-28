@@ -1,4 +1,5 @@
 import { Article } from './types'
+import { createSlug } from "@/lib/utils"
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
 
@@ -35,7 +36,7 @@ export async function getArticles(): Promise<Article[]> {
       content: article.content || article.summary || '',
       url: Array.isArray(article.url) ? article.url : [article.url || ''],
       category: article.category || 'uncategorized',
-      tags: article.tags || [],
+      tags: Array.isArray(article.tags) ? article.tags : article.tags ? [article.tags] : [], // Upravené
       scraped_at: article.scraped_at || new Date().toISOString()
     }))
   } catch (error) {
@@ -45,16 +46,14 @@ export async function getArticles(): Promise<Article[]> {
 }
 
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
-  const articles = await getArticles()
-  return articles.find(article => article.slug === slug) || null
+  try {
+    const articles = await getArticles()
+    const article = articles.find(article => createSlug(article.title) === slug)
+    return article || null
+  } catch (error) {
+    console.error('Failed to fetch article by slug:', error)
+    return null
+  }
 }
 
-function createSlug(title: string): string {
-  return title
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-+|-+$)/g, '')
-    || 'untitled'
-}
+
