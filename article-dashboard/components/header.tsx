@@ -1,5 +1,6 @@
 "use client"
 
+
 import Link from "next/link"
 import { Coffee, User, Filter, Menu } from "lucide-react"
 import { useState } from "react"
@@ -27,7 +28,7 @@ export function Header() {
           <div className="flex items-center justify-between mb-4 md:mb-0">
             <Link href="/" className="flex items-center">
               <Coffee className="h-6 w-6 md:h-8 md:w-8 text-coffee-700" />
-              <span className="ml-2 text-lg md:text-xl font-bold text-zinc-900">Denná šálka kávy</span>
+              <span className="ml-2 text-lg md:text-2xl text-zinc-900 font-heading">Denná šálka kávy</span>
             </Link>
 
             <div className="flex md:hidden items-center">

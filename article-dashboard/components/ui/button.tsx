@@ -9,15 +9,17 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        default: "bg-coffee-100 text-coffee-800 border border-coffee-300 hover:bg-coffee-200",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+          "border border-coffee-300 bg-transparent text-coffee-800 hover:bg-coffee-100",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+        ghost: "hover:bg-coffee-100 text-coffee-800",
+        link: "text-coffee-800 underline-offset-4 hover:underline",
+        coffee: "bg-coffee-100 text-coffee-800 border border-coffee-300 hover:bg-coffee-200",
+        loadMore: "bg-transparent text-coffee-800 underline underline-offset-4 hover:text-coffee-900 p-0 h-auto",
       },
       size: {
         default: "h-10 px-4 py-2",

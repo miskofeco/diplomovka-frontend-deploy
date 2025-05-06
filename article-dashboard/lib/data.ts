@@ -3,11 +3,21 @@ import { createSlug } from "@/lib/utils"
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
 
-export async function getArticles(): Promise<Article[]> {
+export async function getArticles(limit?: number, offset?: number): Promise<Article[]> {
   try {
-    console.log('Fetching articles from:', `${API_BASE}/api/articles`);
+    let url = `${API_BASE}/api/articles`;
     
-    const res = await fetch(`${API_BASE}/api/articles`, {
+    // Add pagination parameters if provided
+    if (limit !== undefined || offset !== undefined) {
+      url += '?';
+      if (limit !== undefined) url += `limit=${limit}`;
+      if (limit !== undefined && offset !== undefined) url += '&';
+      if (offset !== undefined) url += `offset=${offset}`;
+    }
+    
+    console.log('Fetching articles from:', url);
+    
+    const res = await fetch(url, {
       next: { revalidate: 60 },
       headers: {
         'Accept': 'application/json'
@@ -36,7 +46,7 @@ export async function getArticles(): Promise<Article[]> {
       content: article.content || article.summary || '',
       url: Array.isArray(article.url) ? article.url : [article.url || ''],
       category: article.category || 'uncategorized',
-      tags: Array.isArray(article.tags) ? article.tags : article.tags ? [article.tags] : [], // Upravené
+      tags: Array.isArray(article.tags) ? article.tags : article.tags ? [article.tags] : [],
       scraped_at: article.scraped_at || new Date().toISOString()
     }))
   } catch (error) {

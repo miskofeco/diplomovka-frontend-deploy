@@ -40,7 +40,7 @@ export function ScrapeButton() {
     <Button 
       onClick={handleScrape}
       disabled={isLoading}
-      className="bg-coffee-700 hover:bg-coffee-800 text-white"
+      variant="coffee"
     >
       {isLoading ? (
         <>

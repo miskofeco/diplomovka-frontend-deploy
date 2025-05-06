@@ -32,10 +32,10 @@ export default async function ArticlePage({ params }: PageProps) {
   const favicon = `https://www.google.com/s2/favicons?domain=${domain}&sz=32`
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white flex flex-col">
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 flex-grow">
         <article className="max-w-3xl mx-auto">
           <div className="mb-4">
             <Link 

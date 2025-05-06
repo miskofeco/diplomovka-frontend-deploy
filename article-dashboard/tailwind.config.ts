@@ -19,6 +19,12 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Tinos', 'serif'],
+        serif: ['DM Serif Text', 'serif'],
+        heading: ['DM Serif Text', 'serif'],
+        body: ['Tinos', 'serif'],
+      },
       spacing: {
         '2': '0.5rem',
         '3': '0.75rem',
