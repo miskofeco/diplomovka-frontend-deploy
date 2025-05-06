@@ -2,10 +2,11 @@ import { Header } from "@/components/header"
 import { getArticleBySlug, getArticles } from "@/lib/data"
 import Image from "next/image"
 import { notFound } from "next/navigation"
-import { getDomainFromUrl, createSlug } from "@/lib/utils"
+import { createSlug } from "@/lib/utils"
 import "@/styles/globals.css"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
+import { ArticleSourcesList } from "@/components/article-sources-list"
 
 export async function generateStaticParams() {
   const articles = await getArticles()
@@ -15,21 +16,17 @@ export async function generateStaticParams() {
 }
 
 interface PageProps {
-  params: Promise<{
+  params: {
     slug: string
-  }>
+  }
 }
 
 export default async function ArticlePage({ params }: PageProps) {
-  const resolvedParams = await params
-  const article = await getArticleBySlug(resolvedParams.slug)
+  const article = await getArticleBySlug(params.slug)
 
   if (!article) {
     notFound()
   }
-
-  const domain = getDomainFromUrl(article.url[0])
-  const favicon = `https://www.google.com/s2/favicons?domain=${domain}&sz=32`
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
@@ -59,7 +56,7 @@ export default async function ArticlePage({ params }: PageProps) {
               <span>{article.category}</span>
             </div>
             <div className="flex flex-wrap gap-2">
-              {article.tags?.map((tag, index) => (
+              {article.tags?.map((tag: string, index: number) => (
                 <span
                   key={index}
                   className="inline-block text-sm px-3 py-1 bg-zinc-100 text-zinc-600 rounded-md"
@@ -99,22 +96,13 @@ export default async function ArticlePage({ params }: PageProps) {
           </div>
 
           <div className="border-t border-zinc-200 pt-6 mt-8">
-            <a 
-              href={article.url[0]} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center px-4 py-2 rounded-lg border border-zinc-200 hover:bg-zinc-50 transition-colors"
-            >
-              <img 
-                src={favicon} 
-                alt={domain}
-                className="w-4 h-4 mr-2"
-              />
-              <span className="text-zinc-700">{domain}</span>
-            </a>
+            <h3 className="text-lg font-semibold mb-4 text-zinc-900">Zdroje článku:</h3>
+            <ArticleSourcesList article={article} />
           </div>
         </article>
       </main>
     </div>
   )
 }
+
+
