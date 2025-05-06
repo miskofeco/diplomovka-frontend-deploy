@@ -5,7 +5,7 @@ import Link from "next/link"
 export function HeroArticle({ article }: { article: Article }) {
   return (
     <Link href={`/articles/${article.slug}`}>
-      <div className="border border-coffee-200 p-6 hover:bg-coffee-50/50 transition-colors">
+      <div className="border border-coffee-200 p-6 hover:bg-coffee-100 transition-colors bg-coffee-50/50">
         <div className="grid md:grid-cols-2 gap-8">
           <div className="relative aspect-video">
             <Image

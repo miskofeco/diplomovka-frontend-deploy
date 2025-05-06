@@ -4,6 +4,8 @@ import Image from "next/image"
 import { notFound } from "next/navigation"
 import { getDomainFromUrl, createSlug } from "@/lib/utils"
 import "@/styles/globals.css"
+import Link from "next/link"
+import { ArrowLeft } from "lucide-react"
 
 export async function generateStaticParams() {
   const articles = await getArticles()
@@ -35,7 +37,15 @@ export default async function ArticlePage({ params }: PageProps) {
       
       <main className="container mx-auto px-4 py-8">
         <article className="max-w-3xl mx-auto">
-          <div className="mb-8">
+          <div className="mb-4">
+            <Link 
+              href="/" 
+              className="inline-flex items-center text-coffee-700 hover:text-coffee-900 mb-4"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Späť na domov
+            </Link>
+            
             <h1 className="text-4xl font-bold text-zinc-900 mb-4">{article.title}</h1>
             <div className="flex items-center gap-4 text-zinc-600 mb-4">
               <span>{new Date(article.scraped_at).toLocaleString("sk-SK", {
@@ -61,13 +71,26 @@ export default async function ArticlePage({ params }: PageProps) {
           </div>
 
           {article.top_image && (
-            <div className="relative w-full h-[400px] mb-8">
-              <Image
-                src={article.top_image}
-                alt={article.title}
-                fill
-                className="object-cover rounded-lg"
-              />
+            <div className="mb-8">
+              <div className="relative w-full h-[400px]">
+                <Image
+                  src={article.top_image}
+                  alt={article.title}
+                  fill
+                  className="object-cover rounded-lg"
+                />
+              </div>
+              <div className="mt-2 text-sm text-zinc-500">
+                <span>Zdroj: </span>
+                <a 
+                  href={article.top_image} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-coffee-700 hover:underline break-all"
+                >
+                  {article.top_image}
+                </a>
+              </div>
             </div>
           )}
 

@@ -1,5 +1,11 @@
+"use client"
+
 import Link from "next/link"
-import { Coffee, User, Filter } from "lucide-react"
+import { Coffee, User, Filter, Menu } from "lucide-react"
+import { useState } from "react"
+import { useIsMobile } from "@/hooks/use-mobile"
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
+import { cn } from "@/lib/utils"
 
 const categories = [
   { name: "Politika", slug: "politika" },
@@ -12,6 +18,8 @@ const categories = [
 ]
 
 export function Header() {
+  const isMobile = useIsMobile()
+
   return (
     <header className="border-b border-zinc-200">
       <div className="container mx-auto px-4 py-4">
@@ -32,7 +40,34 @@ export function Header() {
                 <span className="sr-only">My Feed</span>
               </Link>
 
-              {/* User profile for mobile - shown only on small screens */}
+              {/* Categories menu for mobile */}
+              <Sheet>
+                <SheetTrigger asChild>
+                  <button className="p-2 mr-2 text-coffee-700 hover:text-coffee-900">
+                    <Menu className="h-5 w-5" />
+                    <span className="sr-only">Categories Menu</span>
+                  </button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-[250px] p-0">
+                  <SheetTitle className="sr-only">Categories Menu</SheetTitle>
+                  <div className="p-6">
+                    <h2 className="text-lg font-semibold mb-4">Kategórie</h2>
+                    <nav className="flex flex-col space-y-3">
+                      {categories.map((category) => (
+                        <Link
+                          key={category.slug}
+                          href={`/category/${category.slug}`}
+                          className="text-zinc-600 hover:text-coffee-700 transition-colors py-1"
+                        >
+                          {category.name}
+                        </Link>
+                      ))}
+                    </nav>
+                  </div>
+                </SheetContent>
+              </Sheet>
+
+              {/* User profile for mobile */}
               <Link
                 href="/profile/settings"
                 className="flex items-center justify-center p-2 rounded-full hover:bg-coffee-100 transition-colors"
@@ -44,7 +79,8 @@ export function Header() {
           </div>
 
           <div className="flex items-center justify-between">
-            <nav className="flex flex-wrap gap-x-6 gap-y-2">
+            {/* Categories for desktop - hidden on mobile */}
+            <nav className="hidden md:flex flex-wrap gap-x-6 gap-y-2">
               {categories.map((category) => (
                 <Link
                   key={category.slug}

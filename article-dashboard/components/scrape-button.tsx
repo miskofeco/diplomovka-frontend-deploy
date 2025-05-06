@@ -3,9 +3,11 @@
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { Loader2 } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 export function ScrapeButton() {
   const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   const handleScrape = async () => {
     setIsLoading(true)
@@ -22,8 +24,11 @@ export function ScrapeButton() {
         throw new Error('Failed to scrape articles')
       }
 
-      // Refresh the page to show new articles
-      window.location.reload()
+      // Wait a moment for backend processing to complete
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      
+      // Use Next.js router to refresh data without full page reload
+      router.refresh()
     } catch (error) {
       console.error('Error scraping articles:', error)
     } finally {
