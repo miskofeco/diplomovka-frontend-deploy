@@ -5,9 +5,16 @@ import { cookies } from "next/headers"
 import Image from "next/image"
 import { format } from "date-fns"
 import { sk } from "date-fns/locale"
+import dynamic from 'next/dynamic'
+import { Suspense } from "react"
 
 // Default categories if user has no preferences
 const DEFAULT_CATEGORIES = ["politika", "kultura", "sport"]
+
+// Dynamicky importované komponenty
+const FeedArticleCard = dynamic(() => import('@/components/feed-article-card').then(mod => ({ default: mod.FeedArticleCard })), {
+  loading: () => <div className="animate-pulse bg-coffee-50 h-40 w-full"></div>
+})
 
 export default async function MyFeed() {
   const articles = await getArticles()

@@ -1,7 +1,13 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
-import { Footer } from '@/components/footer'
+import dynamic from 'next/dynamic'
+import Script from 'next/script'
+
+// Dynamicky importovaný footer
+const Footer = dynamic(() => import('@/components/footer').then(mod => ({ default: mod.Footer })), {
+  ssr: true
+})
 
 export const metadata: Metadata = {
   title: 'Denná šálka kávy',
@@ -32,6 +38,12 @@ export default function RootLayout({
           </div>
           <Footer />
         </ThemeProvider>
+        
+        {/* Analytics script - načíta sa až po interakcii používateľa */}
+        <Script
+          src="https://example.com/analytics.js"
+          strategy="lazyOnload"
+        />
       </body>
     </html>
   )

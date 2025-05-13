@@ -6,7 +6,17 @@ import { createSlug } from "@/lib/utils"
 import "@/styles/globals.css"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
-import { ArticleSourcesList } from "@/components/article-sources-list"
+import dynamic from 'next/dynamic'
+import { Suspense } from "react"
+
+// Dynamicky importované komponenty
+const ArticleSourcesList = dynamic(() => import('@/components/article-sources-list').then(mod => ({ default: mod.ArticleSourcesList })), {
+  loading: () => <div className="animate-pulse bg-coffee-50 h-20 w-full"></div>
+})
+
+const ArticleSuggestions = dynamic(() => import('@/components/article-suggestions').then(mod => ({ default: mod.ArticleSuggestions })), {
+  loading: () => <div className="animate-pulse bg-coffee-50 h-40 w-full"></div>
+})
 
 export async function generateStaticParams() {
   const articles = await getArticles()
@@ -16,17 +26,29 @@ export async function generateStaticParams() {
 }
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 export default async function ArticlePage({ params }: PageProps) {
-  const article = await getArticleBySlug(params.slug)
+  // Awaiting params to get the slug
+  const { slug } = await params
+  
+  const article = await getArticleBySlug(slug)
 
   if (!article) {
     notFound()
   }
+  
+  // Získanie všetkých článkov pre odporúčania
+  const allArticles = await getArticles()
+  
+  // Filtrovanie článkov z rovnakej kategórie
+  const relatedArticles = allArticles.filter(a => 
+    a.category.toLowerCase() === article.category.toLowerCase() && 
+    a.slug !== article.slug
+  ).slice(0, 10)
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
@@ -105,6 +127,14 @@ export default async function ArticlePage({ params }: PageProps) {
             <h3 className="text-lg font-semibold mb-4 text-zinc-900">Zdroje článku:</h3>
             <ArticleSourcesList article={article} />
           </div>
+          
+          {/* Odporúčané články */}
+          <Suspense fallback={<div className="animate-pulse bg-coffee-50 h-40 w-full mt-12"></div>}>
+            <ArticleSuggestions 
+              articles={relatedArticles} 
+              currentArticleSlug={article.slug} 
+            />
+          </Suspense>
         </article>
       </main>
     </div>

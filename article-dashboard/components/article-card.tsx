@@ -1,9 +1,15 @@
+"use client"
+
 import { Article } from "@/lib/types"
 import Image from "next/image"
 import Link from "next/link"
 import { getDomainFromUrl } from "@/lib/utils"
 
-export function ArticleCard({ article }: { article: Article }) {
+interface ArticleCardProps {
+  article: Article
+}
+
+export function ArticleCard({ article }: ArticleCardProps) {
   // Tags are already an array, no need to split
   const tags = article.tags || []
   

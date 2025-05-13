@@ -1,7 +1,13 @@
 import { Header } from "@/components/header"
-import { ArticleCard } from "@/components/article-card"
-import { getArticles } from "@/lib/data"
 import { notFound } from "next/navigation"
+import { getArticles } from "@/lib/data"
+import dynamic from 'next/dynamic'
+import { Suspense } from "react"
+
+// Dynamicky importované komponenty
+const ArticleCard = dynamic(() => import('@/components/article-card').then(mod => ({ default: mod.ArticleCard })), {
+  loading: () => <div className="border border-coffee-200 p-4 h-full"><div className="animate-pulse bg-coffee-50 h-40 mb-4"></div><div className="animate-pulse bg-coffee-50 h-6 mb-2"></div></div>
+})
 
 export async function generateStaticParams() {
   return [
@@ -38,16 +44,19 @@ const categoryBackgrounds: { [key: string]: string } = {
   default: "/bg-coffee.jpg"
 }
 
-export default async function CategoryPage({ params }: { params: { slug: string } }) {
+export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const articles = await getArticles()
   
+  // Awaiting params to get the slug
+  const { slug } = await params
+  
   // Kontrola či kategória existuje
-  if (!categoryNames[params.slug]) {
+  if (!categoryNames[slug]) {
     notFound()
   }
 
   // Get background image for this category (or use default)
-  const backgroundImage = categoryBackgrounds[params.slug] || categoryBackgrounds.default
+  const backgroundImage = categoryBackgrounds[slug] || categoryBackgrounds.default
 
   // Filtrovanie článkov podľa kategórie
   const filteredArticles = articles.filter(article => {
@@ -57,7 +66,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
       .replace(/[\u0300-\u036f]/g, "")
       .replace(/[^a-z0-9]+/g, "")
     
-    return normalizedCategory === params.slug
+    return normalizedCategory === slug
   })
 
   return (
@@ -89,12 +98,12 @@ export default async function CategoryPage({ params }: { params: { slug: string 
             <h1 
               className="text-3xl md:text-5xl font-medium text-zinc-900 mb-2 md:mb-4 px-3 py-1 inline-block"
             >
-              {categoryNames[params.slug]}
+              {categoryNames[slug]}
             </h1>
             <p 
               className="text-base md:text-lg text-zinc-800 max-w-2xl mb-4 md:mb-6 p-2"
             >
-              Prehľad najdôležitejších správ z kategórie {categoryNames[params.slug].toLowerCase()}.
+              Prehľad najdôležitejších správ z kategórie {categoryNames[slug].toLowerCase()}.
               Všetky relevantné informácie na jednom mieste.
             </p>
           </div>

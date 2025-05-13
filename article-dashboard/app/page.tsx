@@ -1,16 +1,25 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { Loader2 } from "lucide-react"
-import { ArticleCard } from "@/components/article-card"
-import { HeroArticle } from "@/components/hero-article"
+import dynamic from 'next/dynamic'
 import { Header } from "@/components/header"
 import { ScrapeButton } from "../components/scrape-button"
-import { LoadMoreButton } from "@/components/load-more-button"
 import { Article } from "@/lib/types"
 import { getArticles } from "@/lib/data"
 import { format } from "date-fns"
 import { sk } from "date-fns/locale"
+
+// Dynamicky importované komponenty
+const ArticleCard = dynamic(() => import('@/components/article-card').then(mod => ({ default: mod.ArticleCard })), {
+  loading: () => <div className="border border-coffee-200 p-4 h-full"><div className="animate-pulse bg-coffee-50 h-40 mb-4"></div><div className="animate-pulse bg-coffee-50 h-6 mb-2"></div></div>
+})
+
+const HeroArticle = dynamic(() => import('@/components/hero-article').then(mod => ({ default: mod.HeroArticle })), {
+  loading: () => <div className="animate-pulse bg-coffee-50 h-80 w-full"></div>
+})
+
+const LoadMoreButton = dynamic(() => import('@/components/load-more-button').then(mod => ({ default: mod.LoadMoreButton })))
 
 const ARTICLES_PER_PAGE = 21
 
@@ -118,18 +127,24 @@ export default function Home() {
           </div>
         ) : (
           <>
-            <HeroArticle article={articles[0]} />
+            <Suspense fallback={<div className="animate-pulse bg-coffee-50 h-80 w-full"></div>}>
+              <HeroArticle article={articles[0]} />
+            </Suspense>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t border-l border-coffee-200 mt-12">
               {articles.slice(1).map((article) => (
-                <ArticleCard key={article.slug} article={article} />
+                <Suspense key={article.slug} fallback={<div className="border border-coffee-200 p-4 h-full"><div className="animate-pulse bg-coffee-50 h-40 mb-4"></div></div>}>
+                  <ArticleCard key={article.slug} article={article} />
+                </Suspense>
               ))}
             </div>
             
-            <LoadMoreButton 
-              onLoadMore={loadMoreArticles}
-              isLoading={loadingMore}
-              hasMore={hasMore}
-            />
+            <Suspense fallback={<div className="flex justify-center my-8"><div className="animate-pulse bg-coffee-50 h-10 w-40"></div></div>}>
+              <LoadMoreButton 
+                onLoadMore={loadMoreArticles}
+                isLoading={loadingMore}
+                hasMore={hasMore}
+              />
+            </Suspense>
           </>
         )}
       </main>

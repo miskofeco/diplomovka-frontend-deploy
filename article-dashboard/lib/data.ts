@@ -18,7 +18,10 @@ export async function getArticles(limit?: number, offset?: number): Promise<Arti
     console.log('Fetching articles from:', url);
     
     const res = await fetch(url, {
-      next: { revalidate: 60 },
+      next: { 
+        revalidate: 300, // Revalidácia každých 5 minút
+        tags: ['articles']
+      },
       headers: {
         'Accept': 'application/json'
       }
