@@ -89,7 +89,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
           {/* Content with relative positioning to appear above the background */}
           <div className="relative z-10">
             <h1 
-              className="text-3xl md:text-5xl font-bold text-zinc-900 mb-2 md:mb-4 px-3 py-1 inline-block"
+              className="text-3xl md:text-5xl font-medium text-zinc-900 mb-2 md:mb-4 px-3 py-1 inline-block"
               style={{ 
                 fontFamily: "'DM Serif Text', serif",
                 backgroundColor: "rgba(255, 255, 255, 0.7)",

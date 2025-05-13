@@ -15,7 +15,7 @@ export function HeroArticle({ article }: { article: Article }) {
 
   return (
     <Link href={`/articles/${article.slug}`}>
-      <div className=" p-6 hover:bg-coffee-50/50 transition-colors">
+      <div className=" p-6 hover:bg-coffee-50/50 transition-colors border border-coffee-200">
         <div className="grid md:grid-cols-2 gap-8">
           <div className="relative aspect-video">
             <Image
