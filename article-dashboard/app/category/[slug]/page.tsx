@@ -73,7 +73,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     <div className="min-h-screen bg-white">
       <Header />
       {/* Hero section with background image */}
-      <div className="mb-12 text-left p-6 relative">
+      <div className="mb-12 text-left p-6 relative border-b border-coffee-200">
           {/* Background image */}
           <div 
             className="absolute inset-0 z-0 opacity-10" 

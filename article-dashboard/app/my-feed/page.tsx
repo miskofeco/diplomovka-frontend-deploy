@@ -83,7 +83,7 @@ export default async function MyFeed() {
       <Header />
       
       {/* Newspaper header */}
-      <div className="bg-coffee-50 border-b border-zinc-200 py-6">
+      <div className="bg-coffee-50 border-b border-coffee-200 py-6">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl md:text-6xl font-serif text-center font-bold mb-2">Vaša šálka kávy</h1>
           <p className="text-center text-zinc-500">{formattedDate}</p>
@@ -115,7 +115,7 @@ export default async function MyFeed() {
       {/* Main content */}
       <main className="container mx-auto px-4 py-8">
         {/* Main headline article */}
-        <div className="mb-12 border-b border-zinc-200 pb-8">
+        <div className="mb-12 border-b border-coffee-200 pb-8">
           <Link href={`/articles/${mainArticle.slug}`}>
             <h2 className="text-3xl md:text-5xl font-serif font-bold mb-4 leading-tight hover:text-coffee-800 transition-colors">
               {mainArticle.title}
@@ -144,7 +144,7 @@ export default async function MyFeed() {
         </div>
 
         {/* Secondary articles - 2 columns with equal heights */}
-        <div className="grid md:grid-cols-2 gap-8 mb-12 border-b border-zinc-200 pb-8">
+        <div className="grid md:grid-cols-2 gap-8 mb-12 border-b border-coffee-200 pb-8">
           {secondaryArticles.map((article) => (
             <Link key={article.slug} href={`/articles/${article.slug}`} className="group flex flex-col h-full">
               <div className="mb-3">
@@ -217,7 +217,7 @@ export default async function MyFeed() {
                     {article1 && (
                       <Link 
                         href={`/articles/${article1.slug}`}
-                        className={`group ${isFirstWide ? 'md:col-span-8' : 'md:col-span-4'} border-t border-zinc-200 pt-4 flex flex-col h-full`}
+                        className={`group ${isFirstWide ? 'md:col-span-8' : 'md:col-span-4'} border-t border-coffee-200 pt-4 flex flex-col h-full`}
                       >
                         <div className="flex flex-col md:flex-row gap-4 h-full">
                           <div className={`relative ${isFirstWide ? 'md:w-1/3' : 'w-full'} h-[120px]`}>
@@ -245,7 +245,7 @@ export default async function MyFeed() {
                     {article2 && (
                       <Link 
                         href={`/articles/${article2.slug}`}
-                        className={`group ${!isFirstWide ? 'md:col-span-8' : 'md:col-span-4'} border-t border-zinc-200 pt-4 flex flex-col h-full`}
+                        className={`group ${!isFirstWide ? 'md:col-span-8' : 'md:col-span-4'} border-t border-coffee-200 pt-4 flex flex-col h-full`}
                       >
                         <div className="flex flex-col md:flex-row gap-4 h-full">
                           <div className={`relative ${!isFirstWide ? 'md:w-1/3' : 'w-full'} h-[120px]`}>

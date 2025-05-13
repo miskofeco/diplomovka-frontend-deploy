@@ -77,7 +77,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      <div className="mb-12 text-center p-6 relative">
+      <div className="mb-12 text-center p-6 relative border-b border-coffee-200">
           {/* Background image */}
           <div 
             className="absolute inset-0 z-0 opacity-10" 

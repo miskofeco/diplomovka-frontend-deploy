@@ -23,7 +23,7 @@ export function Header() {
   const isMobile = useIsMobile()
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-sm">
+    <header className="sticky top-0 z-50 bg-white shadow-md">
       {/* Top header with logo and user actions */}
       <div className="relative">
         <div className="container mx-auto px-4 py-4">
