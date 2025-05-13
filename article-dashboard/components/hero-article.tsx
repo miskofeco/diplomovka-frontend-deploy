@@ -15,7 +15,7 @@ export function HeroArticle({ article }: { article: Article }) {
 
   return (
     <Link href={`/articles/${article.slug}`}>
-      <div className="border border-coffee-200 p-6 hover:bg-coffee-50/50 transition-colors">
+      <div className=" p-6 hover:bg-coffee-50/50 transition-colors">
         <div className="grid md:grid-cols-2 gap-8">
           <div className="relative aspect-video">
             <Image
@@ -26,8 +26,16 @@ export function HeroArticle({ article }: { article: Article }) {
             />
           </div>
           <div>
+            {/* Category displayed at the top */}
+            <div className="mb-3">
+              <span className="text-sm px-3 py-1 bg-coffee-700 text-white">
+                {article.category}
+              </span>
+            </div>
+            
+            {/* Time and source icons */}
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center">
                 <span className="text-sm text-zinc-500">
                   {new Date(article.scraped_at).toLocaleString("sk-SK", {
                     year: 'numeric',
@@ -36,9 +44,6 @@ export function HeroArticle({ article }: { article: Article }) {
                     hour: '2-digit', 
                     minute: '2-digit'
                   })}
-                </span>
-                <span className="text-sm px-2 py-1 bg-coffee-100 text-coffee-800 rounded">
-                  {article.category}
                 </span>
               </div>
               <div className="flex items-center gap-1">
@@ -53,21 +58,22 @@ export function HeroArticle({ article }: { article: Article }) {
                 ))}
               </div>
             </div>
+            
             <div className="flex flex-wrap gap-2 mb-4">
               {article.tags?.map((tag, index) => (
                 <span
                   key={index}
-                  className="inline-block text-xs px-2 py-1 bg-zinc-100 text-zinc-600 rounded"
+                  className="inline-block text-xs px-2 py-1 bg-zinc-200 text-zinc-800 "
                 >
                   {tag}
                 </span>
               ))}
             </div>
-            <h2 className="text-3xl font-bold text-zinc-900 mb-4">
+            <h2 className="text-3xl font-bold text-zinc-900 border-b pb-2 border-zinc-800 mb-4 md:mb-8">
               {article.title}
             </h2>
             <p className="text-zinc-600 line-clamp-3">
-              {article.summary}
+              {article.intro}
             </p>
           </div>
         </div>

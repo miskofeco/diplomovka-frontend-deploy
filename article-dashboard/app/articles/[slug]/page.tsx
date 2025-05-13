@@ -43,7 +43,7 @@ export default async function ArticlePage({ params }: PageProps) {
               Späť na domov
             </Link>
             
-            <h1 className="text-4xl font-bold text-zinc-900 mb-4">{article.title}</h1>
+            <h1 className="text-3xl font-bold text-zinc-900 mb-4">{article.title}</h1>
             <div className="flex items-center gap-4 text-zinc-600 mb-4">
               <span>{new Date(article.scraped_at).toLocaleString("sk-SK", {
                 year: 'numeric',
@@ -59,7 +59,7 @@ export default async function ArticlePage({ params }: PageProps) {
               {article.tags?.map((tag: string, index: number) => (
                 <span
                   key={index}
-                  className="inline-block text-sm px-3 py-1 bg-zinc-100 text-zinc-600 rounded-md"
+                  className="inline-block text-sm px-3 py-1 bg-zinc-200 text-zinc-600"
                 >
                   {tag}
                 </span>
@@ -68,34 +68,40 @@ export default async function ArticlePage({ params }: PageProps) {
           </div>
 
           {article.top_image && (
-            <div className="mb-8">
+            <div className="mb-8 border-t pt-5 border-zinc-800">
               <div className="relative w-full h-[400px]">
                 <Image
                   src={article.top_image}
                   alt={article.title}
                   fill
-                  className="object-cover rounded-lg"
+                  className="object-cover"
                 />
               </div>
-              <div className="mt-2 text-sm text-zinc-500">
-                <span>Zdroj: </span>
+              <div className="mt-2 text-sm text-zinc-500 flex">
+                <span className="whitespace-nowrap">Zdroj: </span>
                 <a 
                   href={article.top_image} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-coffee-700 hover:underline break-all"
+                  className="text-coffee-700 hover:underline truncate ml-1"
+                  title={article.top_image}
                 >
                   {article.top_image}
                 </a>
               </div>
             </div>
           )}
+          
+          {/* Intro text in all capitals */}
+          <div className="max-w-none mb-6 font-bold">
+            {article.intro}
+          </div>
 
           <div className="prose prose-zinc max-w-none mb-8">
             {article.content}
           </div>
 
-          <div className="border-t border-zinc-200 pt-6 mt-8">
+          <div className="border-t border-zinc-800 pt-6 mt-8">
             <h3 className="text-lg font-semibold mb-4 text-zinc-900">Zdroje článku:</h3>
             <ArticleSourcesList article={article} />
           </div>

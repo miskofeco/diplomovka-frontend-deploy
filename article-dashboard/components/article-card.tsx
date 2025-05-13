@@ -28,8 +28,16 @@ export function ArticleCard({ article }: { article: Article }) {
           />
         </div>
         <div className="flex flex-col flex-grow">
+          {/* Category displayed at the top */}
+          <div className="mb-2">
+            <span className="text-xs px-3 py-1 bg-coffee-700 text-white">
+              {article.category}
+            </span>
+          </div>
+          
+          {/* Time and source icons */}
           <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center">
               <span className="text-xs text-zinc-500">
                 {new Date(article.scraped_at).toLocaleString("sk-SK", {
                   year: 'numeric',
@@ -38,9 +46,6 @@ export function ArticleCard({ article }: { article: Article }) {
                   hour: '2-digit', 
                   minute: '2-digit'
                 })}
-              </span>
-              <span className="text-xs px-2 py-1 bg-coffee-100 text-coffee-800 rounded">
-                {article.category}
               </span>
             </div>
             <div className="flex items-center gap-1">
@@ -55,17 +60,18 @@ export function ArticleCard({ article }: { article: Article }) {
               ))}
             </div>
           </div>
-          <h3 className="text-xl font-semibold mb-2 text-zinc-900 line-clamp-2">
+          
+          <h3 className="text-xl font-semibold mb-2 text-zinc-900 line-clamp-2n border-b pb-2 border-zinc-800">
             {article.title}
           </h3>
-          <p className="text-zinc-600 mb-3 h-[4.5rem] line-clamp-3 overflow-hidden font-body">
+          <p className="text-zinc-600 mb-3 h-[4.5rem] line-clamp-3 overflow-hidden">
             {article.intro}
           </p>
           <div className="flex flex-wrap gap-2 mt-auto">
             {tags.map((tag, index) => (
               <span
                 key={index}
-                className="inline-block text-xs px-2 py-1 bg-zinc-100 text-zinc-600 rounded"
+                className="inline-block text-xs px-2 py-1 bg-zinc-200 text-zinc-800"
               >
                 {tag}
               </span>

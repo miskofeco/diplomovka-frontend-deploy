@@ -17,7 +17,10 @@ export function ScrapeButton() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ max_articles: 5 }),
+        body: JSON.stringify({ 
+          max_articles_per_page: 3,
+          max_total_articles: null  // No total limit
+        }),
       })
 
       if (!response.ok) {

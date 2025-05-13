@@ -25,7 +25,7 @@ export default function ProfileSettings() {
             Späť na domovskú stránku
           </Link>
 
-          <div className="bg-white p-6 rounded-lg border border-zinc-200">
+          <div className="bg-white p-6 border border-coffee-300">
             <h1 className="text-2xl font-bold mb-6 text-zinc-900">Nastavenia profilu</h1>
 
             <div className="space-y-6">
@@ -40,7 +40,7 @@ export default function ProfileSettings() {
                       type="text"
                       id="name"
                       placeholder="Vaše meno"
-                      className="w-full px-3 py-2 border border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-coffee-500"
+                      className="w-full px-3 py-2 border text-sm border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-coffee-500"
                     />
                   </div>
                   <div>
@@ -51,7 +51,7 @@ export default function ProfileSettings() {
                       type="email"
                       id="email"
                       placeholder="vas.email@example.com"
-                      className="w-full px-3 py-2 border border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-coffee-500"
+                      className="w-full px-3 py-2 border text-sm border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-coffee-500"
                     />
                   </div>
                 </div>
@@ -69,7 +69,7 @@ export default function ProfileSettings() {
                       id="natural-language"
                       rows={3}
                       placeholder="Príklad: Zaujímajú ma technologické články o AI a obnoviteľnej energii, a zdravotné články o výžive."
-                      className="w-full px-3 py-2 border border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-coffee-500"
+                      className="w-full px-3 py-2 border text-sm border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-coffee-500"
                     ></textarea>
                     <p className="mt-1 text-xs text-zinc-500">
                       Toto nám pomáha lepšie pochopiť vaše preferencie.
@@ -84,7 +84,7 @@ export default function ProfileSettings() {
                       type="text"
                       id="keywords"
                       placeholder="AI, klimatická zmena, výživa, atď."
-                      className="w-full px-3 py-2 border border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-coffee-500"
+                      className="w-full px-3 py-2 border text-sm border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-coffee-500"
                     />
                   </div>
 
@@ -96,7 +96,7 @@ export default function ProfileSettings() {
                           type="radio"
                           id="length-short"
                           name="content-length"
-                          className="h-4 w-4 text-coffee-600 focus:ring-coffee-500 border-zinc-300"
+                          className="h-4 w-4 text-sm text-coffee-600 focus:ring-coffee-500 border-zinc-300"
                         />
                         <label htmlFor="length-short" className="ml-2 block text-sm text-zinc-700">
                           Krátke

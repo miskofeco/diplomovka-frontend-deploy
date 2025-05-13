@@ -22,7 +22,7 @@ const config = {
       fontFamily: {
         sans: ['Tinos', 'serif'],
         serif: ['DM Serif Text', 'serif'],
-        heading: ['DM Serif Text', 'serif'],
+        heading: ['Lexend', 'serif'],
         body: ['Tinos', 'serif'],
       },
       spacing: {

@@ -1,12 +1,13 @@
 "use client"
 
-
 import Link from "next/link"
-import { Coffee, User, Filter, Menu } from "lucide-react"
+import Image from "next/image"
+import { User, Filter, Menu, Coffee } from "lucide-react"
 import { useState } from "react"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
+import { CenteredBorder } from "@/components/ui/centered-border"
 
 const categories = [
   { name: "Politika", slug: "politika" },
@@ -22,29 +23,58 @@ export function Header() {
   const isMobile = useIsMobile()
 
   return (
-    <header className="border-b border-zinc-200">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center justify-between mb-4 md:mb-0">
+    <header className="relative">
+      {/* Top header with logo and user actions */}
+      <div className="relative bg-coffee-100 border-b border-coffee-300">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center">
-              <Coffee className="h-6 w-6 md:h-8 md:w-8 text-coffee-700" />
-              <span className="ml-2 text-lg md:text-2xl text-zinc-900 font-heading">Denná šálka kávy</span>
+              <Image 
+                src="/coffee-logo-2.png" 
+                alt="Denná šálka kávy" 
+                width={40} 
+                height={40} 
+                className="h-10 w-10 md:h-12 md:w-12"
+              />
+              <p className="ml-2 text-lg md:text-2xl text-zinc-900 font-semibold font-heading hidden md:inline">Denná šálka kávy</p>
             </Link>
 
-            <div className="flex md:hidden items-center">
-              {/* My Feed button for mobile */}
-              <Link
-                href="/my-feed"
-                className="flex items-center justify-center p-2 mr-2 text-coffee-700 hover:text-coffee-900"
-              >
-                <Filter className="h-5 w-5" />
-                <span className="sr-only">My Feed</span>
-              </Link>
+            <div className="flex items-center">
+              {/* Desktop navigation links - hidden on mobile */}
+              <div className="hidden md:flex items-center">
+                <Link
+                  href="/"
+                  className="flex items-center justify-center ml-4 text-sm text-zinc-900 hover:text-coffee-900 transition-colors"
+                  aria-label="Profile Settings"
+                >
+                  <Coffee className="h-4 w-4 mr-1" />
+                  <span className="md:inline">Ku káve</span>
+                </Link>
+
+                {/* My Feed button */}
+                <Link
+                  href="/my-feed"
+                  className="flex items-center justify-center ml-4 text-sm text-zinc-900 hover:text-coffee-900 transition-colors"
+                >
+                  <Filter className="h-4 w-4 mr-1" />
+                  <span className="md:inline">Moja šálka kávy</span>
+                </Link>
+
+                {/* User profile */}
+                <Link
+                  href="/profile/settings"
+                  className="flex items-center justify-center ml-4 p-2 rounded-full hover:bg-coffee-100 transition-colors"
+                  aria-label="Profile Settings"
+                >
+                  <User className="h-5 w-5 text-zinc-900" />
+                  <span className="sr-only">Profile Settings</span>
+                </Link>
+              </div>
 
               {/* Categories menu for mobile */}
               <Sheet>
-                <SheetTrigger asChild>
-                  <button className="p-2 mr-2 text-coffee-700 hover:text-coffee-900">
+                <SheetTrigger asChild className="md:hidden ml-2">
+                  <button className="p-2 text-coffee-700 hover:text-coffee-900">
                     <Menu className="h-5 w-5" />
                     <span className="sr-only">Categories Menu</span>
                   </button>
@@ -52,6 +82,35 @@ export function Header() {
                 <SheetContent side="right" className="w-[250px] p-0">
                   <SheetTitle className="sr-only">Categories Menu</SheetTitle>
                   <div className="p-6">
+                    {/* Mobile navigation links */}
+                    <div className="mb-6 border-b border-coffee-200 pb-4">
+                      <h2 className="text-lg font-semibold mb-4">Menu</h2>
+                      <nav className="flex flex-col space-y-3">
+                        <Link
+                          href="/"
+                          className="flex items-center text-zinc-600 hover:text-coffee-700 transition-colors py-1"
+                        >
+                          <Coffee className="h-4 w-4 mr-2" />
+                          Ku káve
+                        </Link>
+                        <Link
+                          href="/my-feed"
+                          className="flex items-center text-zinc-600 hover:text-coffee-700 transition-colors py-1"
+                        >
+                          <Filter className="h-4 w-4 mr-2" />
+                          Moja šálka kávy
+                        </Link>
+                        <Link
+                          href="/profile/settings"
+                          className="flex items-center text-zinc-600 hover:text-coffee-700 transition-colors py-1"
+                        >
+                          <User className="h-4 w-4 mr-2" />
+                          Profil
+                        </Link>
+                      </nav>
+                    </div>
+                    
+                    {/* Categories section */}
                     <h2 className="text-lg font-semibold mb-4">Kategórie</h2>
                     <nav className="flex flex-col space-y-3">
                       {categories.map((category) => (
@@ -67,51 +126,25 @@ export function Header() {
                   </div>
                 </SheetContent>
               </Sheet>
-
-              {/* User profile for mobile */}
-              <Link
-                href="/profile/settings"
-                className="flex items-center justify-center p-2 rounded-full hover:bg-coffee-100 transition-colors"
-              >
-                <User className="h-5 w-5 text-coffee-700" />
-                <span className="sr-only">Profile Settings</span>
-              </Link>
             </div>
           </div>
+        </div>
+      </div>
 
-          <div className="flex items-center justify-between">
-            {/* Categories for desktop - hidden on mobile */}
-            <nav className="hidden md:flex flex-wrap gap-x-6 gap-y-2">
-              {categories.map((category) => (
-                <Link
-                  key={category.slug}
-                  href={`/category/${category.slug}`}
-                  className="text-zinc-600 hover:text-coffee-700 transition-colors"
-                >
-                  {category.name}
-                </Link>
-              ))}
-            </nav>
-
-            {/* My Feed button - hidden on small screens */}
-            <Link
-              href="/my-feed"
-              className="hidden md:flex items-center justify-center ml-6 text-sm text-coffee-700 hover:text-coffee-900 transition-colors"
-            >
-              <Filter className="h-4 w-4 mr-1" />
-              My Feed
-            </Link>
-
-            {/* User profile for desktop - hidden on small screens */}
-            <Link
-              href="/profile/settings"
-              className="hidden md:flex items-center justify-center ml-6 p-2 rounded-full hover:bg-coffee-100 transition-colors"
-              aria-label="Profile Settings"
-            >
-              <User className="h-5 w-5 text-coffee-700" />
-              <span className="sr-only">Profile Settings</span>
-            </Link>
-          </div>
+      {/* Bottom header with categories - hidden on mobile */}
+      <div className="hidden md:block text-coffee-800 border-b border-coffee-300">
+        <div className="container mx-auto px-4 py-1">
+          <nav className="flex justify-center gap-8">
+            {categories.map((category) => (
+              <Link
+                key={category.slug}
+                href={`/category/${category.slug}`}
+                className="font-heading px-4 py-3 text-coffee-800 hover:bg-coffee-100 transition-colors"
+              >
+                {category.name}
+              </Link>
+            ))}
+          </nav>
         </div>
       </div>
     </header>

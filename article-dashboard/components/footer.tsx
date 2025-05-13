@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { Coffee, Github } from "lucide-react"
 
 export function Footer() {
@@ -8,8 +9,14 @@ export function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="flex flex-col items-center md:items-start mb-6 md:mb-0">
             <Link href="/" className="flex items-center">
-              <Coffee className="h-6 w-6 text-coffee-700" />
-              <span className="ml-2 text-xl text-coffee-900 font-heading">Denná šálka kávy</span>
+              <Image 
+                src="/coffee-logo-2.png" 
+                alt="Denná šálka kávy" 
+                width={32} 
+                height={32} 
+                className="h-8 w-8 md:h-15 md:w-15"
+              />
+              <h1 className="ml-2 text-lg md:text-2xl text-zinc-900 font-semibold font-heading hidden md:inline">Denná šálka kávy</h1>
             </Link>
             <p className="mt-2 text-coffee-700 text-sm">
               Vaše denné spravodajstvo v jednej šálke

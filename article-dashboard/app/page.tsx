@@ -62,16 +62,48 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-12 text-center">
-          <h1 className="text-4xl font-bold text-zinc-900 mb-4">
-            Denná šálka kávy
-          </h1>
-          <p className="text-xl text-zinc-600 max-w-2xl mx-auto mb-6">
-            Váš denný prehľad najdôležitejších správ zo Slovenska a sveta. 
-            Všetky relevantné informácie na jednom mieste, spracované pomocou umelej inteligencie.
-          </p>
-          <ScrapeButton />
+      <main className="container mx-auto px-4 py-4">
+        <div className="mb-12 text-left p-6 relative">
+          {/* Background image */}
+          <div 
+            className="absolute inset-0 z-0 opacity-70" 
+            style={{ 
+              backgroundImage: "url('/bg-coffee.jpg')", 
+              backgroundSize: "cover",
+              backgroundPosition: "center"
+            }}
+          ></div>
+          {/* Coffee-colored overlay */}
+          <div 
+            className="absolute inset-0 z-1 opacity-40" 
+            style={{ 
+              backgroundColor: "#805840", // coffee-700 color
+              mixBlendMode: "multiply"
+            }}
+          ></div>
+          
+          {/* Content with relative positioning to appear above the background */}
+          <div className="relative z-10">
+            <h1 
+              className="text-4xl md:text-6xl font-bold text-zinc-900 mb-2 md:mb-4 px-3 py-1 inline-block"
+              style={{ 
+                fontFamily: "'DM Serif Text', serif",
+                backgroundColor: "rgba(255, 255, 255, 0.7)",
+              }}
+            >
+              Denná šálka kávy
+            </h1>
+            <p 
+              className="text-base md:text-lg text-zinc-800 max-w-2xl mb-4 md:mb-6 p-2"
+              style={{ 
+                backgroundColor: "rgba(255, 255, 255, 0.7)",
+              }}
+            >
+              Váš denný prehľad najdôležitejších správ. 
+              Všetky informácie na jednom mieste, spracované umelou inteligenciou.
+            </p>
+            <ScrapeButton/>
+          </div>
         </div>
 
         {isLoading ? (
