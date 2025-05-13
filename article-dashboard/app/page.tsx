@@ -9,6 +9,8 @@ import { ScrapeButton } from "../components/scrape-button"
 import { LoadMoreButton } from "@/components/load-more-button"
 import { Article } from "@/lib/types"
 import { getArticles } from "@/lib/data"
+import { format } from "date-fns"
+import { sk } from "date-fns/locale"
 
 const ARTICLES_PER_PAGE = 21
 
@@ -18,6 +20,10 @@ export default function Home() {
   const [loadingMore, setLoadingMore] = useState(false)
   const [page, setPage] = useState(0)
   const [hasMore, setHasMore] = useState(true)
+  
+  // Get current date for newspaper header
+  const currentDate = new Date()
+  const formattedDate = format(currentDate, "EEEE, d. MMMM yyyy", { locale: sk })
 
   // Initial load
   useEffect(() => {
@@ -62,41 +68,35 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      <main className="container mx-auto px-4 py-4">
-        <div className="mb-12 text-left p-6 relative">
+      <div className="mb-12 text-center p-6 relative">
           {/* Background image */}
           <div 
-            className="absolute inset-0 z-0 opacity-70" 
+            className="absolute inset-0 z-0 opacity-10" 
             style={{ 
-              backgroundImage: "url('/bg-coffee.jpg')", 
+              backgroundImage: "url('/bg-coffee-Photoroom.png')", 
               backgroundSize: "cover",
               backgroundPosition: "center"
             }}
           ></div>
           {/* Coffee-colored overlay */}
           <div 
-            className="absolute inset-0 z-1 opacity-40" 
+            className="absolute inset-0 z-1 opacity-70" 
             style={{ 
-              backgroundColor: "#805840", // coffee-700 color
+              backgroundColor: "#f1ebe4", // coffee-100 color
               mixBlendMode: "multiply"
             }}
           ></div>
           
           {/* Content with relative positioning to appear above the background */}
-          <div className="relative z-10">
+          <div className="relative z-10 container mx-auto px-4 py-8">
             <h1 
-              className="text-4xl md:text-6xl font-medium text-zinc-900 mb-2 md:mb-4 px-3 py-1 inline-block"
-              style={{ 
-                backgroundColor: "rgba(255, 255, 255, 0.7)",
-              }}
+              className="text-4xl md:text-6xl font-serif font-bold mb-2 md:mb-4"
             >
               Denná šálka kávy
             </h1>
+            <p className="text-center text-zinc-500 mb-4">{formattedDate}</p>
             <p 
-              className="text-base md:text-lg text-zinc-800 max-w-2xl mb-4 md:mb-6 p-2"
-              style={{ 
-                backgroundColor: "rgba(255, 255, 255, 0.7)",
-              }}
+              className="text-base md:text-lg text-zinc-800 max-w-2xl mx-auto mb-6"
             >
               Váš denný prehľad najdôležitejších správ. 
               Všetky informácie na jednom mieste, spracované umelou inteligenciou.
@@ -104,6 +104,8 @@ export default function Home() {
             <ScrapeButton/>
           </div>
         </div>
+      <main className="container mx-auto px-4 py-4">
+        
 
         {isLoading ? (
           <div className="flex justify-center items-center py-20">

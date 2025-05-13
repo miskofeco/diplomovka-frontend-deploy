@@ -63,13 +63,11 @@ export default async function CategoryPage({ params }: { params: { slug: string 
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      
-      <main className="container mx-auto px-4 py-8">
-        {/* Hero section with background image */}
-        <div className="mb-12 text-left p-6 relative">
+      {/* Hero section with background image */}
+      <div className="mb-12 text-left p-6 relative">
           {/* Background image */}
           <div 
-            className="absolute inset-0 z-0 opacity-70" 
+            className="absolute inset-0 z-0 opacity-10" 
             style={{ 
               backgroundImage: `url('${backgroundImage}')`, 
               backgroundSize: "cover",
@@ -79,35 +77,30 @@ export default async function CategoryPage({ params }: { params: { slug: string 
           
           {/* Coffee-colored overlay */}
           <div 
-            className="absolute inset-0 z-1 opacity-60" 
+            className="absolute inset-0 z-1 opacity-70" 
             style={{ 
-              backgroundColor: "#805840", // coffee-700 color
+              backgroundColor: "#f1ebe4", // coffee-100 color
               mixBlendMode: "multiply"
             }}
           ></div>
           
           {/* Content with relative positioning to appear above the background */}
-          <div className="relative z-10">
+          <div className="relative z-10 container mx-auto px-4 py-8">
             <h1 
               className="text-3xl md:text-5xl font-medium text-zinc-900 mb-2 md:mb-4 px-3 py-1 inline-block"
-              style={{ 
-                fontFamily: "'DM Serif Text', serif",
-                backgroundColor: "rgba(255, 255, 255, 0.7)",
-              }}
             >
               {categoryNames[params.slug]}
             </h1>
             <p 
               className="text-base md:text-lg text-zinc-800 max-w-2xl mb-4 md:mb-6 p-2"
-              style={{ 
-                backgroundColor: "rgba(255, 255, 255, 0.7)",
-              }}
             >
               Prehľad najdôležitejších správ z kategórie {categoryNames[params.slug].toLowerCase()}.
               Všetky relevantné informácie na jednom mieste.
             </p>
           </div>
         </div>
+      <main className="container mx-auto px-4 py-8">
+        
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t border-l border-coffee-200">
           {filteredArticles.map((article) => (

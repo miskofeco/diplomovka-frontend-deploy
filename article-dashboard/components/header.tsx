@@ -23,9 +23,9 @@ export function Header() {
   const isMobile = useIsMobile()
 
   return (
-    <header className="relative">
+    <header className="sticky top-0 z-50 bg-white shadow-sm">
       {/* Top header with logo and user actions */}
-      <div className="relative bg-coffee-100 border-b border-coffee-300">
+      <div className="relative">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center">
@@ -132,9 +132,9 @@ export function Header() {
       </div>
 
       {/* Bottom header with categories - hidden on mobile */}
-      <div className="hidden md:block text-coffee-800 border-b border-coffee-300">
+      <div className="hidden md:block ">
         <div className="container mx-auto px-4 py-1">
-          <nav className="flex justify-center gap-8">
+          <nav className="flex justify-left gap-8">
             {categories.map((category) => (
               <Link
                 key={category.slug}
