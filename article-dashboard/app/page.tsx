@@ -80,7 +80,7 @@ export default function Home() {
       <div className="mb-12 text-center p-6 relative border-b border-coffee-200">
           {/* Background image */}
           <div 
-            className="absolute inset-0 z-0 opacity-10" 
+            className="absolute inset-0 z-0 opacity-60" 
             style={{ 
               backgroundImage: "url('/bg-coffee-Photoroom.png')", 
               backgroundSize: "cover",
@@ -89,15 +89,15 @@ export default function Home() {
           ></div>
           {/* Coffee-colored overlay */}
           <div 
-            className="absolute inset-0 z-1 opacity-70" 
+            className="absolute inset-0 z-1 opacity-100" 
             style={{ 
               backgroundColor: "#f1ebe4", // coffee-100 color
-              mixBlendMode: "multiply"
+              mixBlendMode: "lighten"
             }}
           ></div>
           
           {/* Content with relative positioning to appear above the background */}
-          <div className="relative z-10 container mx-auto px-4 py-8">
+          <div className="relative z-10 container mx-auto px-4 py-4">
             <h1 
               className="text-4xl md:text-6xl font-serif font-bold mb-2 md:mb-4"
             >
