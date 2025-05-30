@@ -65,7 +65,7 @@ export default async function ArticlePage({ params }: PageProps) {
               Späť na domov
             </Link>
             
-            <h1 className="text-3xl font-bold text-zinc-900 mb-4">{article.title}</h1>
+            <h1 className="text-5xl font-bold text-zinc-900 mb-4">{article.title}</h1>
             <div className="flex items-center gap-4 text-zinc-600 mb-4">
               <span>{new Date(article.scraped_at).toLocaleString("sk-SK", {
                 year: 'numeric',

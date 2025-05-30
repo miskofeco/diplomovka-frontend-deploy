@@ -97,6 +97,10 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      maxWidth: {
+        'content': '1240px', // Global content width
+        'content-narrow': '880px', // For article pages
+      },
     },
   },
   plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],

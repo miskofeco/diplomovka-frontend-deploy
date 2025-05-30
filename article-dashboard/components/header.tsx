@@ -2,12 +2,14 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { User, Filter, Menu, Coffee } from "lucide-react"
+import { User, Filter, Menu, Coffee, Search as SearchImage } from "lucide-react"
 import { useState } from "react"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 import { CenteredBorder } from "@/components/ui/centered-border"
+import { ContentContainer } from '@/components/content-container'
+import { Search } from './search'
 
 const categories = [
   { name: "Politika", slug: "politika" },
@@ -23,8 +25,9 @@ export function Header() {
   const isMobile = useIsMobile()
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-md">
+    <header className="sticky top-0 z-50 bg-white border-b border-coffee-700">
       {/* Top header with logo and user actions */}
+      <ContentContainer>
       <div className="relative">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -38,6 +41,11 @@ export function Header() {
               />
               <p className="ml-2 text-lg md:text-2xl text-zinc-900 font-semibold font-heading hidden md:inline">Denná šálka kávy</p>
             </Link>
+
+          {/* Search Bar */}
+          <div className="flex-1 max-w-md mx-8">
+            <Search />
+          </div>
 
             <div className="flex items-center">
               {/* Desktop navigation links - hidden on mobile */}
@@ -147,6 +155,7 @@ export function Header() {
           </nav>
         </div>
       </div>
+    </ContentContainer>
     </header>
   )
 }

@@ -2,12 +2,18 @@ import { Header } from "@/components/header"
 import { notFound } from "next/navigation"
 import { getArticles } from "@/lib/data"
 import dynamic from 'next/dynamic'
+import { format } from "date-fns"
+import { sk } from "date-fns/locale"
 import { Suspense } from "react"
+import { ContentContainer } from "@/components/content-container"
 
 // Dynamicky importované komponenty
 const ArticleCard = dynamic(() => import('@/components/article-card').then(mod => ({ default: mod.ArticleCard })), {
   loading: () => <div className="border border-coffee-200 p-4 h-full"><div className="animate-pulse bg-coffee-50 h-40 mb-4"></div><div className="animate-pulse bg-coffee-50 h-6 mb-2"></div></div>
 })
+
+const currentDate = new Date()
+const formattedDate = format(currentDate, "EEEE, d. MMMM yyyy", { locale: sk })
 
 export async function generateStaticParams() {
   return [
@@ -73,41 +79,36 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     <div className="min-h-screen bg-white">
       <Header />
       {/* Hero section with background image */}
-      <div className="mb-12 text-left p-4 relative border-b border-coffee-200">
-          {/* Background image */}
-          <div 
-            className="absolute inset-0 z-0 opacity-30" 
-            style={{ 
-              backgroundImage: `url('${backgroundImage}')`, 
-              backgroundSize: "cover",
-              backgroundPosition: "center"
-            }}
-          ></div>
+      <ContentContainer>
+      <div className="border-b border-coffee-700 py-12 px-4 bg-white">
           
-          {/* Coffee-colored overlay */}
-          <div 
-            className="absolute inset-0 z-1 opacity-80" 
-            style={{ 
-              backgroundColor: "#f1ebe4", // coffee-100 color
-              mixBlendMode: "darken"
+          {/* Nadpis */}
+          <h1
+            className="font-serif font-black text-zinc-900 tracking-tight mb-10 text-left leading-none w-full"
+            style={{
+              fontSize: "clamp(5rem, 11vw, 12rem)",
+              lineHeight: 1,
+              whiteSpace: "nowrap",
             }}
-          ></div>
-          
-          {/* Content with relative positioning to appear above the background */}
-          <div className="relative z-10 container mx-auto px-4 py-4">
-            <h1 
-              className="text-3xl md:text-5xl font-medium text-zinc-900 mb-2 md:mb-4 px-3 py-1 inline-block"
-            >
-              {categoryNames[slug]}
-            </h1>
-            <p 
-              className="text-base md:text-lg text-zinc-800 max-w-2xl mb-4 md:mb-6 p-2"
-            >
-              Prehľad najdôležitejších správ z kategórie {categoryNames[slug].toLowerCase()}.
-              Všetky relevantné informácie na jednom mieste.
+          >
+            {categoryNames[slug].toLocaleLowerCase()}
+          </h1>
+            {/* Dátum */}
+            <p className="text-sm text-zinc-400 mb-6 text-left">
+              {formattedDate}
             </p>
+
+          {/* Hnedý banner (ako výber editora) */}
+          <div className="mt-5 mb-5 bg-coffee-700 text-white text-sm md:text-base font-semibold px-4 py-3">
+            <div className="flex flex-wrap gap-6 items-center overflow-x-auto whitespace-nowrap">
+              <span className="text-white tracking-widest uppercase">Obsah</span>
+              <span className="font-normal text-white/90">Prehľad najdôležitejších správ z kategórie {categoryNames[slug].toLowerCase()}.
+              Všetky relevantné informácie na jednom mieste.</span>
+            </div>
           </div>
-        </div>
+
+      </div>
+      
       <main className="container mx-auto px-4 py-8">
         
 
@@ -123,6 +124,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
           </p>
         )}
       </main>
+      </ContentContainer> 
     </div>
+
   )
 }

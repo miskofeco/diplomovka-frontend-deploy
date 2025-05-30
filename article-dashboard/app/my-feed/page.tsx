@@ -7,6 +7,7 @@ import { format } from "date-fns"
 import { sk } from "date-fns/locale"
 import dynamic from 'next/dynamic'
 import { Suspense } from "react"
+import { ContentContainer } from "@/components/content-container"
 
 // Default categories if user has no preferences
 const DEFAULT_CATEGORIES = ["politika", "kultura", "sport"]
@@ -57,6 +58,7 @@ export default async function MyFeed() {
     return (
       <div className="min-h-screen bg-white">
         <Header />
+        <ContentContainer>
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto text-center py-20">
             <h2 className="text-3xl font-serif font-bold mb-4">Žiadne články</h2>
@@ -68,6 +70,7 @@ export default async function MyFeed() {
             </Link>
           </div>
         </div>
+        </ContentContainer>
       </div>
     )
   }
@@ -81,35 +84,33 @@ export default async function MyFeed() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      
+      <ContentContainer>
       {/* Newspaper header */}
-      <div className="bg-coffee-50 border-b border-coffee-200 py-6">
-        <div className="container mx-auto px-4">
-          <h1 className="text-4xl md:text-6xl font-serif text-center font-bold mb-2">Vaša šálka kávy</h1>
-          <p className="text-center text-zinc-500">{formattedDate}</p>
+<div className="border-b border-coffee-700 py-12 bg-white">
           
-          <div className="flex justify-center items-center mt-4">
-            <div className="hidden text-sm text-zinc-500">Váš personalizovaný feed</div>
-            <Link href="/profile/settings" className="text-sm text-coffee-700 hover:text-coffee-900 flex items-center">
-              Upraviť preferencie
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="ml-1"
-              >
-                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-            </Link>
+          {/* Nadpis */}
+          <h1
+            className="font-serif font-black text-zinc-900 tracking-tight mb-4 text-left leading-none w-full"
+            style={{
+              fontSize: "clamp(5rem, 11vw, 12rem)",
+              lineHeight: 1,
+            }}
+          >
+            vaša šálka kávy
+          </h1>
+
+          {/* Dátum */}
+          <p className="text-sm text-zinc-400 mb-6 text-left">
+            {formattedDate}
+          </p>
+
+          {/* Hnedý banner (ako výber editora) */}
+          <div className="mt-5 mb-5 bg-coffee-700 text-white text-sm md:text-base font-semibold px-4 py-3">
+            <div className="flex flex-wrap gap-6 items-center overflow-x-auto whitespace-nowrap">
+              <span className="text-white tracking-widest uppercase">Obsah</span>
+              <span className="font-normal text-white/90">Novinky ušité priamo pre vás</span>
+            </div>
           </div>
-        </div>
       </div>
 
       {/* Main content */}
@@ -275,6 +276,7 @@ export default async function MyFeed() {
           </div>
         )}
       </main>
+      </ContentContainer>
     </div>
   )
 }

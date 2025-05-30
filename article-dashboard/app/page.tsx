@@ -9,6 +9,7 @@ import { Article } from "@/lib/types"
 import { getArticles } from "@/lib/data"
 import { format } from "date-fns"
 import { sk } from "date-fns/locale"
+import { ContentContainer } from '@/components/content-container'
 
 // Dynamicky importované komponenty
 const ArticleCard = dynamic(() => import('@/components/article-card').then(mod => ({ default: mod.ArticleCard })), {
@@ -23,7 +24,7 @@ const LoadMoreButton = dynamic(() => import('@/components/load-more-button').the
 
 const ARTICLES_PER_PAGE = 21
 
-export default function Home() {
+export default function HomePage() {
   const [articles, setArticles] = useState<Article[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
@@ -73,81 +74,89 @@ export default function Home() {
       setLoadingMore(false)
     }
   }
+
+  const heroArticle = articles[0]
+  const otherArticles = articles.slice(1)
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-coffee-700" />
+      </div>
+    )
+  }
   
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      <div className="mb-12 text-center p-6 relative border-b border-coffee-200">
-          {/* Background image */}
-          <div 
-            className="absolute inset-0 z-0 opacity-60" 
-            style={{ 
-              backgroundImage: "url('/bg-coffee-Photoroom.png')", 
-              backgroundSize: "cover",
-              backgroundPosition: "center"
-            }}
-          ></div>
-          {/* Coffee-colored overlay */}
-          <div 
-            className="absolute inset-0 z-1 opacity-100" 
-            style={{ 
-              backgroundColor: "#f1ebe4", // coffee-100 color
-              mixBlendMode: "lighten"
-            }}
-          ></div>
+      <ContentContainer>
+      <div className="border-b border-coffee-700 py-12 bg-white">
           
-          {/* Content with relative positioning to appear above the background */}
-          <div className="relative z-10 container mx-auto px-4 py-4">
-            <h1 
-              className="text-4xl md:text-6xl font-serif font-bold mb-2 md:mb-4"
-            >
-              Denná šálka kávy
-            </h1>
-            <p className="text-center text-zinc-500 mb-4">{formattedDate}</p>
-            <p 
-              className="text-base md:text-lg text-zinc-800 max-w-2xl mx-auto mb-6"
-            >
-              Váš denný prehľad najdôležitejších správ. 
-              Všetky informácie na jednom mieste, spracované umelou inteligenciou.
-            </p>
-            <ScrapeButton/>
-          </div>
-        </div>
-      <main className="container mx-auto px-4 py-4">
-        
+          {/* Nadpis */}
+          <h1
+            className="font-serif font-black text-zinc-900 tracking-tight mb-4 text-left leading-none w-full"
+            style={{
+              fontSize: "clamp(5rem, 11vw, 12rem)",
+              lineHeight: 1,
+            }}
+          >
+            denná šálka kávy
+          </h1>
 
-        {isLoading ? (
-          <div className="flex justify-center items-center py-20">
-            <Loader2 className="h-8 w-8 animate-spin text-coffee-700" />
+          {/* Dátum */}
+          <p className="text-sm text-zinc-400 mb-6 text-left">
+            {formattedDate}
+          </p>
+
+          {/* Hnedý banner (ako výber editora) */}
+          <div className="mt-5 mb-5 bg-coffee-700 text-white text-sm md:text-base font-semibold px-4 py-3">
+            <div className="flex flex-wrap gap-6 items-center overflow-x-auto whitespace-nowrap">
+              <span className="text-white tracking-widest uppercase">Pripravené pre vás pomocou AI</span>
+              <span className="font-normal text-white/90">Horúce novinky ako čerstvo pripravená káva</span>
+            </div>
           </div>
-        ) : articles.length === 0 ? (
-          <div className="text-center">
-            <h2 className="text-2xl font-bold text-zinc-900">No articles available</h2>
-            <p className="text-zinc-600 mt-2">Please make sure the backend server is running and accessible</p>
-          </div>
-        ) : (
-          <>
-            <Suspense fallback={<div className="animate-pulse bg-coffee-50 h-80 w-full"></div>}>
-              <HeroArticle article={articles[0]} />
-            </Suspense>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t border-l border-coffee-200 mt-12">
-              {articles.slice(1).map((article) => (
-                <Suspense key={article.slug} fallback={<div className="border border-coffee-200 p-4 h-full"><div className="animate-pulse bg-coffee-50 h-40 mb-4"></div></div>}>
-                  <ArticleCard key={article.slug} article={article} />
+          {/* Scrape Button */}
+          <ScrapeButton />
+      </div>
+        <main className="py-8">
+          {/* Hero Article */}
+          {heroArticle && (
+            <section className="mb-12">
+              <Suspense fallback={<div className="animate-pulse bg-coffee-50 h-96 w-full"></div>}>
+                <HeroArticle article={heroArticle} />
+              </Suspense>
+            </section>
+          )}
+
+          {/* Latest Articles Grid */}
+          <section>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t border-l border-coffee-200">
+              {otherArticles.map((article) => (
+                <Suspense 
+                  key={article.slug} 
+                  fallback={<div className="border border-coffee-200 p-4 h-full"><div className="animate-pulse bg-coffee-50 h-40 mb-4"></div></div>}
+                >
+                  <ArticleCard article={article} />
                 </Suspense>
               ))}
             </div>
-            
-            <Suspense fallback={<div className="flex justify-center my-8"><div className="animate-pulse bg-coffee-50 h-10 w-40"></div></div>}>
-              <LoadMoreButton 
-                onLoadMore={loadMoreArticles}
-                isLoading={loadingMore}
-                hasMore={hasMore}
-              />
-            </Suspense>
-          </>
-        )}
-      </main>
+
+            {/* Load More Button */}
+            {hasMore && (
+              <div className="flex justify-center mt-8">
+                <button
+                  onClick={loadMoreArticles}
+                  disabled={loadingMore}
+                  className="flex items-center gap-2 bg-coffee-700 text-white px-6 py-3 rounded hover:bg-coffee-800 disabled:opacity-50"
+                >
+                  {loadingMore && <Loader2 className="h-4 w-4 animate-spin" />}
+                  {loadingMore ? 'Načítavam...' : 'Načítať viac článkov'}
+                </button>
+              </div>
+            )}
+          </section>
+        </main>
+      </ContentContainer>
     </div>
   )
 }

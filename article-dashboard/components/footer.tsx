@@ -1,10 +1,12 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Coffee, Github } from "lucide-react"
+import { ContentContainer } from "./content-container"
 
 export function Footer() {
   return (
     <footer className="bg-coffee-100 border-t border-coffee-200">
+      <ContentContainer>
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="flex flex-col items-center md:items-start mb-6 md:mb-0">
@@ -16,7 +18,7 @@ export function Footer() {
                 height={32} 
                 className="h-8 w-8 md:h-15 md:w-15"
               />
-              <h1 className="ml-2 text-lg md:text-2xl text-zinc-900 font-semibold font-heading hidden md:inline">Denná šálka kávy</h1>
+              <p className="ml-2 text-lg md:text-2xl text-zinc-900 font-semibold font-heading hidden md:inline">Denná šálka kávy</p>
             </Link>
             <p className="mt-2 text-coffee-700 text-sm">
               Vaše denné spravodajstvo v jednej šálke
@@ -41,6 +43,7 @@ export function Footer() {
           </div>
         </div>
       </div>
+    </ContentContainer>
     </footer>
   )
 }
