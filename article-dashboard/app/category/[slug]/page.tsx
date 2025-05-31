@@ -86,7 +86,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
           {/* Nadpis */}
           <div className="flex flex-row items-center gap-4">
           <Image 
-                      src="/logodaily.png" 
+                      src="/logo-grey.png" 
                       alt="Denná šálka kávy" 
                       width={40} 
                       height={40} 

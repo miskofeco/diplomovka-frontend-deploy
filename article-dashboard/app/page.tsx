@@ -94,13 +94,13 @@ export default function HomePage() {
       <div className="border-b border-coffee-700 py-12 bg-white">
         <div className="flex flex-row items-center gap-5">
           <Image 
-            src="/logodaily.png" 
+            src="/logo-grey.png" 
             alt="Denná šálka kávy" 
             width={150} 
             height={150} 
             className="h-auto object-contain"
             style={{
-              width: "clamp(5rem, 9vw, 10rem)",
+              width: "clamp(7rem, 8vw, 10rem)",
               height: "auto"
             }}
           />
@@ -108,7 +108,7 @@ export default function HomePage() {
           <h1
             className="font-serif font-black text-zinc-900 tracking-tight text-left leading-none flex-1"
             style={{
-              fontSize: "clamp(2.5rem, 9vw, 10rem)",
+              fontSize: "clamp(4rem, 9vw, 10rem)",
               lineHeight: 1,
             }}
           >
@@ -116,7 +116,7 @@ export default function HomePage() {
           </h1>
         </div>
         {/* Dátum */}
-        <p className="text-sm text-zinc-400 mb-6 text-left">
+        <p className="text-lg text-zinc-400 mb-6 text-left">
           {formattedDate}
         </p>
 
@@ -159,7 +159,7 @@ export default function HomePage() {
                 <button
                   onClick={loadMoreArticles}
                   disabled={loadingMore}
-                  className="flex items-center gap-2 bg-coffee-700 text-white px-6 py-3 rounded hover:bg-coffee-800 disabled:opacity-50"
+                  className="flex items-center gap-2 border border-coffee-300 bg-coffee-100 text-coffee-600 px-6 py-3  hover:bg-coffee-800 disabled:opacity-50"
                 >
                   {loadingMore && <Loader2 className="h-4 w-4 animate-spin" />}
                   {loadingMore ? 'Načítavam...' : 'Načítať viac článkov'}

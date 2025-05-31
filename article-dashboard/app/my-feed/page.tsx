@@ -89,18 +89,30 @@ export default async function MyFeed() {
 <div className="border-b border-coffee-700 py-12 bg-white">
           
           {/* Nadpis */}
+          <div className="flex flex-row items-center gap-4">
+          <Image 
+                      src="/logo-grey.png" 
+                      alt="Denná šálka kávy" 
+                      width={150} 
+                      height={150} 
+                      className="h-auto object-contain"
+                      style={{
+                        width: "clamp(7rem, 8vw, 10rem)",
+                        height: "auto"
+                      }}
+            />
           <h1
-            className="font-serif font-black text-zinc-900 tracking-tight mb-4 text-left leading-none w-full"
+            className="font-serif font-black text-zinc-900 tracking-tight text-left leading-none w-full"
             style={{
-              fontSize: "clamp(5rem, 11vw, 12rem)",
+              fontSize: "clamp(4rem, 9vw, 10rem)",
               lineHeight: 1,
             }}
           >
             vaša šálka kávy
           </h1>
-
+          </div>
           {/* Dátum */}
-          <p className="text-sm text-zinc-400 mb-6 text-left">
+          <p className="text-lg text-zinc-400 mb-6 text-left">
             {formattedDate}
           </p>
 
