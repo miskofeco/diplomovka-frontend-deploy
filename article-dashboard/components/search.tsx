@@ -20,13 +20,13 @@ export function Search() {
   // Perform search when debounced query changes
   useEffect(() => {
     if (debouncedQuery) {
-      search(debouncedQuery)
+      search(debouncedQuery, isAdvancedEnabled) // Pass advanced search flag
       setIsOpen(true)
     } else {
       clearResults()
       setIsOpen(false)
     }
-  }, [debouncedQuery, search, clearResults])
+  }, [debouncedQuery, isAdvancedEnabled, search, clearResults])
 
   // Close search when clicking outside
   useEffect(() => {
@@ -55,7 +55,10 @@ export function Search() {
 
   const toggleAdvancedSearch = () => {
     setIsAdvancedEnabled(!isAdvancedEnabled)
-    // TODO: Implement advanced search logic here when enabled/disabled
+    // Re-search with new mode if there's a query
+    if (query) {
+      search(query, !isAdvancedEnabled)
+    }
     console.log('Advanced search:', isAdvancedEnabled ? 'disabled' : 'enabled')
   }
 
@@ -67,11 +70,11 @@ export function Search() {
         <input
           ref={inputRef}
           type="text"
-          placeholder={isAdvancedEnabled ? "Pokročilé hľadanie..." : "Hľadať články..."}
+          placeholder={isAdvancedEnabled ? "AI vyhľadávanie..." : "Hľadať články..."}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => query && setIsOpen(true)}
-          className="w-full pl-10 pr-20 py-2 border-b border-zinc-300 focus:outline-none focus:ring-1 focus:ring-coffee-500 focus:border-transparent"
+          className="w-full pl-10 pr-20 py-2 border border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-coffee-500 focus:border-transparent"
         />
         <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
           {/* Advanced Search Toggle Button */}
@@ -82,7 +85,7 @@ export function Search() {
                 ? 'text-coffee-600 bg-coffee-100 shadow-sm' 
                 : 'text-zinc-400 hover:text-zinc-600 hover:bg-zinc-50'
             }`}
-            title={isAdvancedEnabled ? "Zakázať pokročilé vyhľadávanie" : "Povoliť pokročilé vyhľadávanie"}
+            title={isAdvancedEnabled ? "Zakázať AI vyhľadávanie" : "Povoliť AI vyhľadávanie"}
           >
             <Settings className="h-4 w-4" />
           </button>
@@ -106,7 +109,9 @@ export function Search() {
           {isLoading && (
             <div className="flex items-center justify-center py-4">
               <Loader2 className="h-4 w-4 animate-spin text-coffee-600" />
-              <span className="ml-2 text-sm text-zinc-600">Hľadám...</span>
+              <span className="ml-2 text-sm text-zinc-600">
+                {isAdvancedEnabled ? 'AI hľadá...' : 'Hľadám...'}
+              </span>
             </div>
           )}
 
@@ -127,7 +132,7 @@ export function Search() {
               <div className="px-3 py-2 text-xs font-semibold text-zinc-500 uppercase tracking-wide border-b flex items-center justify-between">
                 <span>Výsledky hľadania ({results.length})</span>
                 {isAdvancedEnabled && (
-                  <span className="text-coffee-600 font-normal">Pokročilé</span>
+                  <span className="text-coffee-600 font-normal">AI</span>
                 )}
               </div>
               {results.map((article, index) => (

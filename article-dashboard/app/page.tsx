@@ -10,6 +10,7 @@ import { getArticles } from "@/lib/data"
 import { format } from "date-fns"
 import { sk } from "date-fns/locale"
 import { ContentContainer } from '@/components/content-container'
+import Image from "next/image"
 
 // Dynamicky importované komponenty
 const ArticleCard = dynamic(() => import('@/components/article-card').then(mod => ({ default: mod.ArticleCard })), {
@@ -91,32 +92,43 @@ export default function HomePage() {
       <Header />
       <ContentContainer>
       <div className="border-b border-coffee-700 py-12 bg-white">
-          
+        <div className="flex flex-row items-center gap-5">
+          <Image 
+            src="/logodaily.png" 
+            alt="Denná šálka kávy" 
+            width={150} 
+            height={150} 
+            className="h-auto object-contain"
+            style={{
+              width: "clamp(5rem, 9vw, 10rem)",
+              height: "auto"
+            }}
+          />
           {/* Nadpis */}
           <h1
-            className="font-serif font-black text-zinc-900 tracking-tight mb-4 text-left leading-none w-full"
+            className="font-serif font-black text-zinc-900 tracking-tight text-left leading-none flex-1"
             style={{
-              fontSize: "clamp(5rem, 11vw, 12rem)",
+              fontSize: "clamp(2.5rem, 9vw, 10rem)",
               lineHeight: 1,
             }}
           >
             denná šálka kávy
           </h1>
+        </div>
+        {/* Dátum */}
+        <p className="text-sm text-zinc-400 mb-6 text-left">
+          {formattedDate}
+        </p>
 
-          {/* Dátum */}
-          <p className="text-sm text-zinc-400 mb-6 text-left">
-            {formattedDate}
-          </p>
-
-          {/* Hnedý banner (ako výber editora) */}
-          <div className="mt-5 mb-5 bg-coffee-700 text-white text-sm md:text-base font-semibold px-4 py-3">
-            <div className="flex flex-wrap gap-6 items-center overflow-x-auto whitespace-nowrap">
-              <span className="text-white tracking-widest uppercase">Pripravené pre vás pomocou AI</span>
-              <span className="font-normal text-white/90">Horúce novinky ako čerstvo pripravená káva</span>
-            </div>
+        {/* Hnedý banner (ako výber editora) */}
+        <div className="mt-5 mb-5 bg-coffee-700 text-white text-sm md:text-base font-semibold px-4 py-3">
+          <div className="flex flex-wrap gap-6 items-center overflow-x-auto whitespace-nowrap">
+            <span className="text-white tracking-widest uppercase">Pripravené pre vás pomocou AI</span>
+            <span className="font-normal text-white/90">Horúce novinky ako čerstvo pripravená káva</span>
           </div>
-          {/* Scrape Button */}
-          <ScrapeButton />
+        </div>
+        {/* Scrape Button */}
+        <ScrapeButton />
       </div>
         <main className="py-8">
           {/* Hero Article */}

@@ -6,6 +6,7 @@ import { format } from "date-fns"
 import { sk } from "date-fns/locale"
 import { Suspense } from "react"
 import { ContentContainer } from "@/components/content-container"
+import Image from "next/image"
 
 // Dynamicky importované komponenty
 const ArticleCard = dynamic(() => import('@/components/article-card').then(mod => ({ default: mod.ArticleCard })), {
@@ -83,6 +84,29 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
       <div className="border-b border-coffee-700 py-12 px-4 bg-white">
           
           {/* Nadpis */}
+          <div className="flex flex-row items-center gap-4">
+          <Image 
+                      src="/logodaily.png" 
+                      alt="Denná šálka kávy" 
+                      width={40} 
+                      height={40} 
+                      className="h-auto object-contain"
+                      style={{
+                        width: "clamp(2rem, 4vw, 5rem)",
+                        height: "auto"
+                      }}
+            />
+          <h1
+            className="font-serif font-black text-zinc-900 tracking-tight text-left leading-none w-full"
+            style={{
+              fontSize: "clamp(2rem, 3vw, 5rem)",
+              lineHeight: 1,
+              whiteSpace: "nowrap",
+            }}
+          >
+            denná šálka kávy
+          </h1>
+          </div>
           <h1
             className="font-serif font-black text-zinc-900 tracking-tight mb-10 text-left leading-none w-full"
             style={{

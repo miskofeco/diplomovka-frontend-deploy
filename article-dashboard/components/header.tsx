@@ -33,13 +33,12 @@ export function Header() {
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center">
               <Image 
-                src="/coffee-logo-2.png" 
+                src="/logodaily.png" 
                 alt="Denná šálka kávy" 
                 width={40} 
                 height={40} 
                 className="h-10 w-10 md:h-12 md:w-12"
               />
-              <p className="ml-2 text-lg md:text-2xl text-zinc-900 font-semibold font-heading hidden md:inline">Denná šálka kávy</p>
             </Link>
 
           {/* Search Bar */}

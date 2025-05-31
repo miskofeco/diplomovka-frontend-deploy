@@ -8,7 +8,7 @@ export function useSearch() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const search = useCallback(async (query: string) => {
+  const search = useCallback(async (query: string, isAdvanced: boolean = false) => {
     if (!query || query.trim().length < 2) {
       setResults([])
       return
@@ -18,7 +18,12 @@ export function useSearch() {
     setError(null)
 
     try {
-      const response = await fetch(`${API_BASE}/api/articles/search?q=${encodeURIComponent(query)}`)
+      const searchParams = new URLSearchParams({
+        q: query,
+        advanced: isAdvanced.toString()
+      })
+
+      const response = await fetch(`${API_BASE}/api/articles/search?${searchParams}`)
       
       if (!response.ok) {
         throw new Error('Search failed')
@@ -26,8 +31,7 @@ export function useSearch() {
 
       const data = await response.json()
       
-      // Transform the data and ensure unique IDs
-    interface RawSearchResult {
+      interface RawSearchResult {
         id?: string;
         title?: string;
         top_image?: string | null;
@@ -38,26 +42,25 @@ export function useSearch() {
         category?: string;
         tags?: string | string[];
         scraped_at?: string;
-    }
+      }
 
-                const articles: Article[] = (data as RawSearchResult[])
-                    .map((article: RawSearchResult, index: number) => ({
-                        id: article.id || `search-result-${index}`, // Fallback ID
-                        title: article.title || 'Untitled',
-                        slug: createSlug(article.title || `untitled-${index}`),
-                        top_image: article.top_image || '',
-                        intro: article.intro || '',
-                        summary: article.summary || '',
-                        content: article.content || article.summary || '',
-                        url: Array.isArray(article.url) ? article.url : [article.url || ''],
-                        category: article.category || 'uncategorized',
-                        tags: Array.isArray(article.tags) ? article.tags : article.tags ? [article.tags] : [],
-                        scraped_at: article.scraped_at || new Date().toISOString()
-                    }))
-                    .filter((article: Article, index: number, self: Article[]) => 
-                        // Remove duplicates based on title
-                        index === self.findIndex((a: Article) => a.title === article.title)
-                    )
+      const articles: Article[] = (data as RawSearchResult[])
+        .map((article: RawSearchResult, index: number) => ({
+          id: article.id || `search-result-${index}`,
+          title: article.title || 'Untitled',
+          slug: createSlug(article.title || `untitled-${index}`),
+          top_image: article.top_image || '',
+          intro: article.intro || '',
+          summary: article.summary || '',
+          content: article.content || article.summary || '',
+          url: Array.isArray(article.url) ? article.url : [article.url || ''],
+          category: article.category || 'uncategorized',
+          tags: Array.isArray(article.tags) ? article.tags : article.tags ? [article.tags] : [],
+          scraped_at: article.scraped_at || new Date().toISOString()
+        }))
+        .filter((article: Article, index: number, self: Article[]) => 
+          index === self.findIndex((a: Article) => a.title === article.title)
+        )
 
       setResults(articles)
     } catch (err) {
@@ -82,7 +85,6 @@ export function useSearch() {
   }
 }
 
-// Helper function
 function createSlug(title: string): string {
   return title
     .toLowerCase()
