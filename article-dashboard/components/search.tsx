@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from 'react'
-import { Search as SearchIcon, X, Loader2, Settings } from 'lucide-react'
+import { Search as SearchIcon, X, Loader2, Settings, Brain } from 'lucide-react'
 import { useSearch } from '@/lib/hooks/useSearch'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -87,7 +87,7 @@ export function Search() {
             }`}
             title={isAdvancedEnabled ? "Zakázať AI vyhľadávanie" : "Povoliť AI vyhľadávanie"}
           >
-            <Settings className="h-4 w-4" />
+            <Brain className="h-4 w-4" />
           </button>
           
           {/* Clear Button */}

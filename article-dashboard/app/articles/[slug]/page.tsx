@@ -44,7 +44,7 @@ export default async function ArticlePage({ params }: PageProps) {
   // Získanie všetkých článkov pre odporúčania
   const allArticles = await getArticles()
   
-  // Filtrovanie článkov z rovnakej kategórie
+  // Filtrovanie článkov z rovnakej kategórie (as fallback)
   const relatedArticles = allArticles.filter(a => 
     a.category.toLowerCase() === article.category.toLowerCase() && 
     a.slug !== article.slug
@@ -131,8 +131,9 @@ export default async function ArticlePage({ params }: PageProps) {
           {/* Odporúčané články */}
           <Suspense fallback={<div className="animate-pulse bg-coffee-50 h-40 w-full mt-12"></div>}>
             <ArticleSuggestions 
-              articles={relatedArticles} 
-              currentArticleSlug={article.slug} 
+              currentArticleId={article.id}
+              currentArticleSlug={article.slug}
+              fallbackArticles={relatedArticles}
             />
           </Suspense>
         </article>

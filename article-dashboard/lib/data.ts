@@ -60,9 +60,39 @@ export async function getArticles(limit?: number, offset?: number): Promise<Arti
 
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
   try {
+    // First try to get from the articles list
     const articles = await getArticles()
-    const article = articles.find(article => createSlug(article.title) === slug)
-    return article || null
+    const foundArticle = articles.find(article => article.slug === slug)
+    
+    if (foundArticle) {
+      console.log('Found article with ID:', foundArticle.id)
+      return foundArticle
+    }
+    
+    // If not found, try the details endpoint
+    const response = await fetch(`${API_BASE}/api/articles/${slug}/details`)
+    if (response.ok) {
+      const article = await response.json()
+      console.log('Found article via details endpoint with ID:', article.id)
+      
+      // Transform to match Article interface
+      return {
+        id: article.id || '',
+        title: article.title || 'Untitled',
+        slug: slug,
+        top_image: article.top_image || '',
+        intro: article.intro || '',
+        summary: article.summary || '',
+        content: article.summary || '',
+        url: Array.isArray(article.url) ? article.url : [article.url || ''],
+        category: article.category || 'uncategorized',
+        tags: Array.isArray(article.tags) ? article.tags : article.tags ? [article.tags] : [],
+        scraped_at: article.scraped_at || new Date().toISOString()
+      }
+    }
+    
+    console.warn('Article not found for slug:', slug)
+    return null
   } catch (error) {
     console.error('Failed to fetch article by slug:', error)
     return null
