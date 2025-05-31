@@ -12,7 +12,7 @@ export function Footer() {
           <div className="flex flex-col items-center md:items-start mb-6 md:mb-0">
             <Link href="/" className="flex items-center">
               <Image 
-                src="/logo-grey.png" 
+                src="/logo-d.png" 
                 alt="Denná šálka kávy" 
                 width={32} 
                 height={32} 

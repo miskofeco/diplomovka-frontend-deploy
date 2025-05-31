@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { User, Filter, Menu, Coffee, Search as SearchImage } from "lucide-react"
+import { User, Filter, Menu, Coffee, Search as SearchImage, X } from "lucide-react"
 import { useState } from "react"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
@@ -23,70 +23,30 @@ const categories = [
 
 export function Header() {
   const isMobile = useIsMobile()
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false)
+
+  const toggleMobileSearch = () => {
+    setIsMobileSearchOpen(!isMobileSearchOpen)
+  }
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-coffee-700">
       {/* Top header with logo and user actions */}
       <ContentContainer>
       <div className="relative">
-        <div className="container mx-auto px-4 py-4">
+        <div className="py-4">
           <div className="flex items-center justify-between">
-            <Link href="/" className="flex items-center">
-              <Image 
-                src="/logo-grey.png" 
-                alt="Denná šálka kávy" 
-                width={40} 
-                height={40} 
-                className="h-10 w-10 md:h-12 md:w-12"
-              />
-            </Link>
-
-          {/* Search Bar */}
-          <div className="flex-1 max-w-md mx-8">
-            <Search />
-          </div>
-
+            {/* Left section - Mobile menu or Logo (desktop) */}
             <div className="flex items-center">
-              {/* Desktop navigation links - hidden on mobile */}
-              <div className="hidden md:flex items-center">
-                <Link
-                  href="/"
-                  className="flex items-center justify-center ml-4 text-sm text-zinc-900 hover:text-coffee-900 transition-colors"
-                  aria-label="Profile Settings"
-                >
-                  <Coffee className="h-4 w-4 mr-1" />
-                  <span className="md:inline">Ku káve</span>
-                </Link>
-
-                {/* My Feed button */}
-                <Link
-                  href="/my-feed"
-                  className="flex items-center justify-center ml-4 text-sm text-zinc-900 hover:text-coffee-900 transition-colors"
-                >
-                  <Filter className="h-4 w-4 mr-1" />
-                  <span className="md:inline">Moja šálka kávy</span>
-                </Link>
-
-                {/* User profile */}
-                <Link
-                  href="/profile/settings"
-                  className="flex items-center justify-center ml-4 p-2 rounded-full hover:bg-coffee-100 transition-colors"
-                  aria-label="Profile Settings"
-                >
-                  <User className="h-5 w-5 text-zinc-900" />
-                  <span className="sr-only">Profile Settings</span>
-                </Link>
-              </div>
-
-              {/* Categories menu for mobile */}
+              {/* Mobile menu button */}
               <Sheet>
-                <SheetTrigger asChild className="md:hidden ml-2">
+                <SheetTrigger asChild className="md:hidden">
                   <button className="p-2 text-coffee-700 hover:text-coffee-900">
                     <Menu className="h-5 w-5" />
                     <span className="sr-only">Categories Menu</span>
                   </button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[250px] p-0">
+                <SheetContent side="left" className="w-[250px] p-0">
                   <SheetTitle className="sr-only">Categories Menu</SheetTitle>
                   <div className="p-6">
                     {/* Mobile navigation links */}
@@ -133,15 +93,104 @@ export function Header() {
                   </div>
                 </SheetContent>
               </Sheet>
+
+              {/* Desktop Logo (left position) */}
+              <Link href="/" className="hidden md:flex items-center ml-2">
+                <div className="relative w-10 h-10">
+                  <Image 
+                    src="/logo-d.png" 
+                    alt="Denná šálka kávy" 
+                    fill
+                    className="object-contain"
+                    priority
+                  />
+                </div>
+              </Link>
             </div>
+
+            {/* Center section - Mobile Logo */}
+            <div className="md:hidden flex justify-center flex-1">
+              <Link href="/" className="flex items-center">
+                <div className="relative w-10 h-10">
+                  <Image 
+                    src="/logo-d.png" 
+                    alt="Denná šálka kávy" 
+                    fill
+                    className="object-contain"
+                    priority
+                  />
+                </div>
+              </Link>
+            </div>
+
+            {/* Center section - Desktop Search Bar */}
+            <div className="hidden md:block flex-1 max-w-md mx-8">
+              <Search />
+            </div>
+
+            {/* Right section */}
+            <div className="flex items-center gap-2">
+              {/* Desktop navigation links */}
+              <div className="hidden md:flex items-center gap-4">
+                <Link
+                  href="/"
+                  className="flex items-center text-sm text-zinc-900 hover:text-coffee-900 transition-colors"
+                  aria-label="Ku káve"
+                >
+                  <Coffee className="h-4 w-4 mr-1" />
+                  <span>Ku káve</span>
+                </Link>
+
+                <Link
+                  href="/my-feed"
+                  className="flex items-center text-sm text-zinc-900 hover:text-coffee-900 transition-colors"
+                >
+                  <Filter className="h-4 w-4 mr-1" />
+                  <span>Moja šálka kávy</span>
+                </Link>
+
+                <Link
+                  href="/profile/settings"
+                  className="p-2 rounded-full hover:bg-coffee-100 transition-colors"
+                  aria-label="Profile Settings"
+                >
+                  <User className="h-5 w-5 text-zinc-900" />
+                  <span className="sr-only">Profile Settings</span>
+                </Link>
+              </div>
+
+              {/* Mobile search toggle button */}
+              <button 
+                onClick={toggleMobileSearch}
+                className="md:hidden p-2 text-coffee-700 hover:text-coffee-900 transition-colors"
+                aria-label="Toggle Search"
+              >
+                {isMobileSearchOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <SearchImage className="h-5 w-5" />
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile search bar - shown/hidden based on state */}
+        <div className={cn(
+          "md:hidden border-t border-coffee-200 transition-all duration-200 ease-in-out overflow-visible",
+          isMobileSearchOpen ? "block" : "hidden"
+        )}>
+          {/* Search container with proper z-index for dropdown */}
+          <div className="relative z-[60] px-4 py-3">
+            <Search />
           </div>
         </div>
       </div>
 
       {/* Bottom header with categories - hidden on mobile */}
-      <div className="hidden md:block ">
+      <div className="hidden md:block">
         <div className="container mx-auto px-4 py-1">
-          <nav className="flex justify-left gap-8">
+          <nav className="flex justify-center gap-8">
             {categories.map((category) => (
               <Link
                 key={category.slug}

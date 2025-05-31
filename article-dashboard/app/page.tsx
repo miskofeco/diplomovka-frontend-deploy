@@ -94,7 +94,7 @@ export default function HomePage() {
       <div className="border-b border-coffee-700 py-12 bg-white">
         <div className="flex flex-row items-center gap-5">
           <Image 
-            src="/logo-grey.png" 
+            src="/logo-d.png" 
             alt="Denná šálka kávy" 
             width={150} 
             height={150} 
@@ -106,7 +106,7 @@ export default function HomePage() {
           />
           {/* Nadpis */}
           <h1
-            className="font-serif font-black text-zinc-900 tracking-tight text-left leading-none flex-1"
+            className="font-serif font-black text-zinc-900 tracking-tight text-left mb-4 leading-none flex-1"
             style={{
               fontSize: "clamp(4rem, 9vw, 10rem)",
               lineHeight: 1,

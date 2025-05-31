@@ -91,7 +91,7 @@ export default async function MyFeed() {
           {/* Nadpis */}
           <div className="flex flex-row items-center gap-4">
           <Image 
-                      src="/logo-grey.png" 
+                      src="/logo-d.png" 
                       alt="Denná šálka kávy" 
                       width={150} 
                       height={150} 
