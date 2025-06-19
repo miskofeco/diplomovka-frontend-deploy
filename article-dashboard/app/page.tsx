@@ -78,6 +78,9 @@ export default function HomePage() {
 
   const heroArticle = articles[0]
   const otherArticles = articles.slice(1)
+  
+  // Get last 5 article titles for scrolling banner
+  const last5ArticleTitles = articles.slice(-5).map(article => article.title).filter(Boolean)
 
   if (isLoading) {
     return (
@@ -92,6 +95,11 @@ export default function HomePage() {
       <Header />
       <ContentContainer>
       <div className="border-b border-coffee-700 py-12 bg-white">
+      <div className="flex flex-column items-center">
+        <p className="text-lg text-zinc-700 mb-6 text-center">
+          {formattedDate}
+        </p>
+      </div>
         <div className="flex flex-row items-center gap-5">
           <Image 
             src="/logo-d.png" 
@@ -115,18 +123,30 @@ export default function HomePage() {
             denná šálka kávy
           </h1>
         </div>
-        {/* Dátum */}
-        <p className="text-lg text-zinc-400 mb-6 text-left">
-          {formattedDate}
-        </p>
+        
 
-        {/* Hnedý banner (ako výber editora) */}
-        <div className="mt-5 mb-5 bg-coffee-700 text-white text-sm md:text-base font-semibold px-4 py-3">
-          <div className="flex flex-wrap gap-6 items-center overflow-x-auto whitespace-nowrap">
-            <span className="text-white tracking-widest uppercase">Pripravené pre vás pomocou AI</span>
-            <span className="font-normal text-white/90">Horúce novinky ako čerstvo pripravená káva</span>
+        {/* Hnedý banner s automaticky posuvnými titulkami */}
+        <div className="mt-5 mb-5 bg-coffee-700 text-white text-sm md:text-base font-semibold px-4 py-3 overflow-hidden">
+          <div className="flex items-center gap-6">
+            <span className="text-white tracking-widest uppercase whitespace-nowrap text-xs md:text-sm">Obsah</span>
+            
+            {/* Scrolling titles container */}
+            <div className="flex-1 overflow-hidden relative">
+              <div className="flex gap-8 animate-scroll-left whitespace-nowrap">
+                {/* Duplicate the titles for seamless loop */}
+                {[...last5ArticleTitles, ...last5ArticleTitles].map((title, index) => (
+                  <span 
+                    key={index}
+                    className="font-normal text-white/90 inline-block"
+                  >
+                    {title}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
+        
         {/* Scrape Button */}
         <ScrapeButton />
       </div>
@@ -159,7 +179,7 @@ export default function HomePage() {
                 <button
                   onClick={loadMoreArticles}
                   disabled={loadingMore}
-                  className="flex items-center gap-2 border border-coffee-300 bg-coffee-100 text-coffee-600 px-6 py-3  hover:bg-coffee-800 disabled:opacity-50"
+                  className="flex items-center gap-2 border border-coffee-800 bg-coffee-100 text-coffee-800 px-6 py-3  hover:bg-coffee-200 disabled:opacity-50"
                 >
                   {loadingMore && <Loader2 className="h-4 w-4 animate-spin" />}
                   {loadingMore ? 'Načítavam...' : 'Načítať viac článkov'}

@@ -81,12 +81,19 @@ export default async function MyFeed() {
   const tertiaryArticles = filteredArticles.slice(3, 6)
   const remainingArticles = filteredArticles.slice(6)
 
+  const last5ArticleTitles = articles.slice(-5).map(article => article.title).filter(Boolean)
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
       <ContentContainer>
       {/* Newspaper header */}
-<div className="border-b border-coffee-700 py-12 bg-white">
+        <div className="border-b border-coffee-700 py-12 bg-white">
+          <div className="flex flex-column items-center">
+              <p className="text-lg text-zinc-700 mb-6 text-center">
+                {formattedDate}
+              </p>
+          </div>
           
           {/* Nadpis */}
           <div className="flex flex-row items-center gap-4">
@@ -102,7 +109,7 @@ export default async function MyFeed() {
                       }}
             />
           <h1
-            className="font-serif font-black text-zinc-900 tracking-tight text-left leading-none w-full"
+            className="font-serif font-black text-zinc-900 tracking-tight text-left mb-5 leading-none w-full"
             style={{
               fontSize: "clamp(4rem, 9vw, 10rem)",
               lineHeight: 1,
@@ -111,18 +118,28 @@ export default async function MyFeed() {
             vaša šálka kávy
           </h1>
           </div>
-          {/* Dátum */}
-          <p className="text-lg text-zinc-400 mb-6 text-left">
-            {formattedDate}
-          </p>
 
-          {/* Hnedý banner (ako výber editora) */}
-          <div className="mt-5 mb-5 bg-coffee-700 text-white text-sm md:text-base font-semibold px-4 py-3">
-            <div className="flex flex-wrap gap-6 items-center overflow-x-auto whitespace-nowrap">
-              <span className="text-white tracking-widest uppercase">Obsah</span>
-              <span className="font-normal text-white/90">Novinky ušité priamo pre vás</span>
+          {/* Hnedý banner s automaticky posuvnými titulkami */}
+        <div className="mt-5 mb-5 bg-coffee-700 text-white text-sm md:text-base font-semibold px-4 py-3 overflow-hidden">
+          <div className="flex items-center gap-6">
+          <span className="text-white tracking-widest uppercase whitespace-nowrap text-xs md:text-sm">Obsah</span>
+            
+            {/* Scrolling titles container */}
+            <div className="flex-1 overflow-hidden relative">
+              <div className="flex gap-8 animate-scroll-left whitespace-nowrap">
+                {/* Duplicate the titles for seamless loop */}
+                {[...last5ArticleTitles, ...last5ArticleTitles].map((title, index) => (
+                  <span 
+                    key={index}
+                    className="font-normal text-white/90 inline-block"
+                  >
+                    {title}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
+        </div>
       </div>
 
       {/* Main content */}

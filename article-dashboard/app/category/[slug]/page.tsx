@@ -76,6 +76,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     return normalizedCategory === slug
   })
 
+  const last5ArticleTitles = articles.slice(-5).map(article => article.title).filter(Boolean)
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
@@ -122,14 +124,27 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
               {formattedDate}
             </p>
 
-          {/* Hnedý banner (ako výber editora) */}
-          <div className="mt-5 mb-5 bg-coffee-700 text-white text-sm md:text-base font-semibold px-4 py-3">
-            <div className="flex flex-wrap gap-6 items-center overflow-x-auto whitespace-nowrap">
-              <span className="text-white tracking-widest uppercase">Obsah</span>
-              <span className="font-normal text-white/90">Prehľad najdôležitejších správ z kategórie {categoryNames[slug].toLowerCase()}.
-              Všetky relevantné informácie na jednom mieste.</span>
+          {/* Hnedý banner s automaticky posuvnými titulkami */}
+        <div className="mt-5 mb-5 bg-coffee-700 text-white text-sm md:text-base font-semibold px-4 py-3 overflow-hidden">
+          <div className="flex items-center gap-6">
+          <span className="text-white tracking-widest uppercase whitespace-nowrap text-xs md:text-sm">Obsah</span>
+            
+            {/* Scrolling titles container */}
+            <div className="flex-1 overflow-hidden relative">
+              <div className="flex gap-8 animate-scroll-left whitespace-nowrap">
+                {/* Duplicate the titles for seamless loop */}
+                {[...last5ArticleTitles, ...last5ArticleTitles].map((title, index) => (
+                  <span 
+                    key={index}
+                    className="font-normal text-white/90 inline-block"
+                  >
+                    {title}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
+        </div>
 
       </div>
       
