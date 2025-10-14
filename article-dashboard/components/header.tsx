@@ -30,7 +30,7 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-coffee-700">
+    <header className="sticky top-0 z-50 bg-white border-b-2 border- border-coffee-50">
       {/* Top header with logo and user actions */}
       <ContentContainer>
       <div className="relative">
@@ -195,7 +195,7 @@ export function Header() {
               <Link
                 key={category.slug}
                 href={`/category/${category.slug}`}
-                className="font-heading px-4 py-3 text-coffee-800 hover:bg-coffee-100 transition-colors"
+                className="font-heading px-4 py-3 text-black hover:underline underline-offset-2 transition-colors"
               >
                 {category.name}
               </Link>

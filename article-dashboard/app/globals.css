@@ -25,6 +25,10 @@
     font-family: 'DM Serif Text', serif !important;
     font-weight: 400;
   }
+
+  a {
+    font-family: 'Lexend', serif !important;
+  }
 }
 
 @layer utilities {

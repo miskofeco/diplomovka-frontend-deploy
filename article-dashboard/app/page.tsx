@@ -91,10 +91,10 @@ export default function HomePage() {
   }
   
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-coffee-10">
       <Header />
       <ContentContainer>
-      <div className="border-b border-coffee-700 py-12 bg-white">
+      <div className="border-b border-coffee-700 py-12">
       <div className="flex flex-column items-center">
         <p className="text-lg text-zinc-700 mb-6 text-center">
           {formattedDate}
@@ -126,9 +126,9 @@ export default function HomePage() {
         
 
         {/* Hnedý banner s automaticky posuvnými titulkami */}
-        <div className="mt-5 mb-5 bg-coffee-700 text-white text-sm md:text-base font-semibold px-4 py-3 overflow-hidden">
+        <div className="mt-5 mb-5 bg-white text-black text-sm md:text-base font-semibold px-4 py-3 overflow-hidden">
           <div className="flex items-center gap-6">
-            <span className="text-white tracking-widest uppercase whitespace-nowrap text-xs md:text-sm">Obsah</span>
+            <span className="text-coffee-950 tracking-widest uppercase whitespace-nowrap text-xs md:text-sm">Obsah</span>
             
             {/* Scrolling titles container */}
             <div className="flex-1 overflow-hidden relative">
@@ -137,7 +137,7 @@ export default function HomePage() {
                 {[...last5ArticleTitles, ...last5ArticleTitles].map((title, index) => (
                   <span 
                     key={index}
-                    className="font-normal text-white/90 inline-block"
+                    className="font-normal text-black/90 inline-block"
                   >
                     {title}
                   </span>
@@ -162,7 +162,7 @@ export default function HomePage() {
 
           {/* Latest Articles Grid */}
           <section>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t border-l border-coffee-200">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t border-l border-coffee-10">
               {otherArticles.map((article) => (
                 <Suspense 
                   key={article.slug} 

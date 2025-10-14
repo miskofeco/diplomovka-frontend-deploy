@@ -37,6 +37,7 @@ const config = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         coffee: {
+          10: "#f8f9fc",
           50: "#f9f6f3",
           100: "#f1ebe4",
           200: "#e2d5c7",
@@ -48,6 +49,7 @@ const config = {
           800: "#6a4939",
           900: "#583d32",
           950: "#301f19",
+          1000: "#54585f",
         },
         primary: {
           DEFAULT: "hsl(var(--primary))",

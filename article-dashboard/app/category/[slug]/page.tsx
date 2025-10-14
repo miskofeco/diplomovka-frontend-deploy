@@ -90,18 +90,18 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
           <Image 
                       src="/logo-d.png" 
                       alt="Denná šálka kávy" 
-                      width={40} 
-                      height={40} 
+                      width={25} 
+                      height={25} 
                       className="h-auto object-contain"
                       style={{
-                        width: "clamp(2rem, 4vw, 5rem)",
+                        width: "clamp(1.5rem, 3vw, 4rem)",
                         height: "auto"
                       }}
             />
           <h1
             className="font-serif font-black text-zinc-900 tracking-tight text-left leading-none w-full"
             style={{
-              fontSize: "clamp(2rem, 3vw, 5rem)",
+              fontSize: "clamp(1rem, 2vw, 3rem)",
               lineHeight: 1,
               whiteSpace: "nowrap",
             }}
@@ -112,7 +112,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
           <h1
             className="font-serif font-black text-zinc-900 tracking-tight mb-10 text-left leading-none w-full"
             style={{
-              fontSize: "clamp(5rem, 11vw, 12rem)",
+              fontSize: "clamp(3rem, 7vw, 8rem)",
               lineHeight: 1,
               whiteSpace: "nowrap",
             }}

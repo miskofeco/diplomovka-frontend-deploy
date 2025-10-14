@@ -24,7 +24,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
 
   return (
     <Link href={`/articles/${article.slug}`}>
-      <div className="relative border-b border-r border-coffee-200 p-4 hover:bg-coffee-50/50 transition-colors h-full flex flex-col">
+      <div className="group bg-white relative border-b-2 border-r-2 border-coffee-10 p-4 transition-colors h-full flex flex-col">
         <div className="relative aspect-video mb-4">
           <Image
             src={article.top_image || "/placeholder.jpg"}
@@ -67,7 +67,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
             </div>
           </div>
           
-          <h3 className="text-xl font-semibold mb-2 text-zinc-900 line-clamp-2n border-b pb-2 border-zinc-800">
+          <h3 className="group-hover:underline underline-offset-4 text-xl font-semibold mb-2 text-zinc-900 line-clamp-2n border-b pb-2 border-zinc-800">
             {article.title}
           </h3>
           <p className="text-zinc-600 mb-3 h-[4.5rem] line-clamp-3 overflow-hidden">
