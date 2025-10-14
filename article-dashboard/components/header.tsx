@@ -65,7 +65,7 @@ export function Header() {
                           className="flex items-center text-zinc-600 hover:text-coffee-700 transition-colors py-1"
                         >
                           <Filter className="h-4 w-4 mr-2" />
-                          Moja šálka kávy
+                          Môj výber
                         </Link>
                         <Link
                           href="/profile/settings"
@@ -146,7 +146,7 @@ export function Header() {
                   className="flex items-center text-sm text-zinc-900 hover:text-coffee-900 transition-colors"
                 >
                   <Filter className="h-4 w-4 mr-1" />
-                  <span>Moja šálka kávy</span>
+                  <span>Môj výber</span>
                 </Link>
 
                 <Link

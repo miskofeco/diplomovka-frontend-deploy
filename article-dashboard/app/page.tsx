@@ -116,7 +116,7 @@ export default function HomePage() {
           <h1
             className="font-serif font-black text-zinc-900 tracking-tight text-left mb-4 leading-none flex-1"
             style={{
-              fontSize: "clamp(4rem, 9vw, 10rem)",
+              fontSize: "clamp(3rem, 6vw, 10rem)",
               lineHeight: 1,
             }}
           >

@@ -20,10 +20,10 @@ const config = {
     },
     extend: {
       fontFamily: {
-        sans: ['Tinos', 'serif'],
-        serif: ['DM Serif Text', 'serif'],
-        heading: ['Lexend', 'serif'],
-        body: ['Tinos', 'serif'],
+        sans: ['Aeonik', 'serif'],
+        serif: ['Aeonik', 'serif'],
+        heading: ['Aeonik', 'serif'],
+        body: ['Aeonik', 'serif'],
       },
       spacing: {
         '2': '0.5rem',
@@ -98,8 +98,8 @@ const config = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       maxWidth: {
-        'content': '1240px', // Global content width
-        'content-narrow': '880px', // For article pages
+        'content': '1140px', // Global content width
+        'content-narrow': '1100px', // For article pages
       },
     },
   },

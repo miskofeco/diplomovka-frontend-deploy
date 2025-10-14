@@ -55,7 +55,7 @@ export default async function ArticlePage({ params }: PageProps) {
       <Header />
       
       <main className="container mx-auto px-4 py-8 flex-grow">
-        <article className="max-w-3xl mx-auto">
+        <article className="max-w-content mx-auto">
           <div className="mb-4">
             <Link 
               href="/" 
