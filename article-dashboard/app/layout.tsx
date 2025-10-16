@@ -10,8 +10,9 @@ const Footer = dynamic(() => import('@/components/footer').then(mod => ({ defaul
 })
 
 export const metadata: Metadata = {
-  title: 'Denná šálka kávy',
-  description: 'Vaše denné spravodajstvo',
+  title: 'Pressence',
+  description: 'Vaše denné AI spravodajstvo',
+  icons: "/press-icon.png"
 }
 
 export default function RootLayout({

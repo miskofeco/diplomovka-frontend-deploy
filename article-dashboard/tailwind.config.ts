@@ -51,6 +51,9 @@ const config = {
           950: "#301f19",
           1000: "#54585f",
         },
+        grey: {
+          500: "#545454",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -101,7 +104,7 @@ const config = {
       },
       maxWidth: {
         'content': '1140px', // Global content width
-        'content-narrow': '1100px', // For article pages
+        'content-narrow': '900px', // For article pages
       },
     },
   },

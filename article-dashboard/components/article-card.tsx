@@ -24,7 +24,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
 
   return (
     <Link href={`/articles/${article.slug}`}>
-      <div className="group bg-white relative border-b-2 border-r-2 border-coffee-10 p-4 transition-colors h-full flex flex-col">
+      <div className="group bg-white relative border-b border-r border-zinc-200 p-4 transition-colors h-full flex flex-col">
         <div className="relative aspect-video mb-4">
           <Image
             src={article.top_image || "/placeholder.jpg"}

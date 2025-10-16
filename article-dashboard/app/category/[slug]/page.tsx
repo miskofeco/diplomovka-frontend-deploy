@@ -76,58 +76,46 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     return normalizedCategory === slug
   })
 
-  const last5ArticleTitles = articles.slice(-5).map(article => article.title).filter(Boolean)
+  const last5ArticleTitles = articles.slice(5).map(article => article.title).filter(Boolean)
+
+  // Get current date for newspaper header
+  const currentDate = new Date()
+  const formattedDate = format(currentDate, "EEEE, d. MMMM yyyy", { locale: sk })
+  const capitalizedDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
 
   return (
     <div className="min-h-screen bg-white">
       <Header />
       {/* Hero section with background image */}
-      <ContentContainer>
-      <div className="border-b border-coffee-700 py-12 px-4 bg-white">
+      <div className="bg-zinc-100">
+        <ContentContainer>
+        <div className=" pt-12">
           
-          {/* Nadpis */}
-          <div className="flex flex-row items-center gap-4">
-          <Image 
-                      src="/logo-d.png" 
-                      alt="Denná šálka kávy" 
-                      width={25} 
-                      height={25} 
-                      className="h-auto object-contain"
-                      style={{
-                        width: "clamp(1.5rem, 3vw, 4rem)",
-                        height: "auto"
-                      }}
-            />
+        <div className="flex flex-column items-center">
+        <p className="text-lg text-zinc-600 mb-4 text-center align-middle">
+          {capitalizedDate}
+        </p>
+      </div>
           <h1
-            className="font-serif font-black text-zinc-900 tracking-tight text-left leading-none w-full"
+            className="font-serif text-zinc-900 tracking-tight pb-10 text-left leading-none w-full"
             style={{
-              fontSize: "clamp(1rem, 2vw, 3rem)",
+              fontSize: "clamp(2.5rem, 5vw, 7rem)",
               lineHeight: 1,
               whiteSpace: "nowrap",
             }}
           >
-            denná šálka kávy
+            {categoryNames[slug].toLocaleUpperCase()+"."}
           </h1>
-          </div>
-          <h1
-            className="font-serif font-black text-zinc-900 tracking-tight mb-10 text-left leading-none w-full"
-            style={{
-              fontSize: "clamp(3rem, 7vw, 8rem)",
-              lineHeight: 1,
-              whiteSpace: "nowrap",
-            }}
-          >
-            {categoryNames[slug].toLocaleLowerCase()}
-          </h1>
-            {/* Dátum */}
-            <p className="text-sm text-zinc-400 mb-6 text-left">
-              {formattedDate}
-            </p>
 
-          {/* Hnedý banner s automaticky posuvnými titulkami */}
-        <div className="mt-5 mb-5 bg-coffee-700 text-white text-sm md:text-base font-semibold px-4 py-3 overflow-hidden">
+
+      </div>
+        </ContentContainer>
+      </div>
+      <div className="border-y border-zinc-300 py-0">
+        <ContentContainer>
+        <div className="bg-white text-zinc-600 text-sm md:text-base font-semibold px-4 py-3 overflow-hidden">
           <div className="flex items-center gap-6">
-          <span className="text-white tracking-widest uppercase whitespace-nowrap text-xs md:text-sm">Obsah</span>
+          <span className="text-zinc-600 tracking-widest uppercase whitespace-nowrap text-xs md:text-sm">Obsah</span>
             
             {/* Scrolling titles container */}
             <div className="flex-1 overflow-hidden relative">
@@ -136,7 +124,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
                 {[...last5ArticleTitles, ...last5ArticleTitles].map((title, index) => (
                   <span 
                     key={index}
-                    className="font-normal text-white/90 inline-block"
+                    className="font-normal text-zinc-600 inline-block"
                   >
                     {title}
                   </span>
@@ -145,13 +133,16 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
             </div>
           </div>
         </div>
+        </ContentContainer>
 
       </div>
+      <ContentContainer>
       
-      <main className="container mx-auto px-4 py-8">
+      
+      <main className="container mx-auto px-0 py-8">
         
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t border-l border-coffee-200">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t border-l border-zinc-200">
           {filteredArticles.map((article) => (
             <ArticleCard key={article.slug} article={article} />
           ))}

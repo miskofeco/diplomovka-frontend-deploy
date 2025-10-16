@@ -54,18 +54,18 @@ export default async function ArticlePage({ params }: PageProps) {
     <div className="min-h-screen bg-white flex flex-col">
       <Header />
       
-      <main className="container mx-auto px-4 py-8 flex-grow">
-        <article className="max-w-content mx-auto">
+      <main className="container px-4 py-8 max-w-content flex-grow">
+        <article className="max-w-content-narrow">
           <div className="mb-4">
             <Link 
               href="/" 
-              className="inline-flex items-center text-coffee-700 hover:text-coffee-900 mb-4"
+              className="inline-flex items-center text-zinc-600 hover:underline underline-offset-4 hover:text-zinc-900 mb-4"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Späť na domov
             </Link>
             
-            <h1 className="text-5xl font-bold text-zinc-900 mb-4">{article.title}</h1>
+            <h1 className="text-3xl md:text-4xl text-zinc-900 mb-4">{article.title}</h1>
             <div className="flex items-center gap-4 text-zinc-600 mb-4">
               <span>{new Date(article.scraped_at).toLocaleString("sk-SK", {
                 year: 'numeric',
@@ -91,7 +91,7 @@ export default async function ArticlePage({ params }: PageProps) {
 
           {article.top_image && (
             <div className="mb-8 border-t pt-5 border-zinc-800">
-              <div className="relative w-full h-[400px]">
+              <div className="relative w-full h-[50vw] md:h-[30vw]">
                 <Image
                   src={article.top_image}
                   alt={article.title}

@@ -66,7 +66,7 @@ export function Search() {
     <div ref={searchRef} className="relative w-full max-w-md">
       {/* Search Input */}
       <div className="relative">
-        <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-zinc-400" />
+        <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-black" />
         <input
           ref={inputRef}
           type="text"
@@ -74,7 +74,7 @@ export function Search() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => query && setIsOpen(true)}
-          className="w-full pl-10 pr-20 py-2 border border-zinc-300 rounded-md focus:outline-none focus:ring-2 focus:ring-coffee-500 focus:border-transparent"
+          className="w-full pl-10 pr-20 py-2 border-b border-black focus:outline-none focus:ring-1 focus:ring-zinc-500 focus:border-transparent"
         />
         <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
           {/* Advanced Search Toggle Button */}
@@ -82,8 +82,8 @@ export function Search() {
             onClick={toggleAdvancedSearch}
             className={`p-1 rounded transition-colors ${
               isAdvancedEnabled 
-                ? 'text-coffee-600 bg-coffee-100 shadow-sm' 
-                : 'text-zinc-400 hover:text-zinc-600 hover:bg-zinc-50'
+                ? 'text-black bg-zinc-300 shadow-sm' 
+                : 'text-zinc-600 hover:text-black hover:bg-zinc-50'
             }`}
             title={isAdvancedEnabled ? "Zakázať AI vyhľadávanie" : "Povoliť AI vyhľadávanie"}
           >

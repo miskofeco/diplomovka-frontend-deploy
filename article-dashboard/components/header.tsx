@@ -30,7 +30,7 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b-2 border- border-coffee-50">
+    <header className="sticky top-0 z-50 bg-white border-b border- border-zinc-200">
       {/* Top header with logo and user actions */}
       <ContentContainer>
       <div className="relative">
@@ -41,7 +41,7 @@ export function Header() {
               {/* Mobile menu button */}
               <Sheet>
                 <SheetTrigger asChild className="md:hidden">
-                  <button className="p-2 text-coffee-700 hover:text-coffee-900">
+                  <button className="p-2 text-zinc-700 hover:text-zinc-900">
                     <Menu className="h-5 w-5" />
                     <span className="sr-only">Categories Menu</span>
                   </button>
@@ -55,21 +55,21 @@ export function Header() {
                       <nav className="flex flex-col space-y-3">
                         <Link
                           href="/"
-                          className="flex items-center text-zinc-600 hover:text-coffee-700 transition-colors py-1"
+                          className="flex items-center text-zinc-600 hover:text-zinc-700 transition-colors py-1"
                         >
                           <Coffee className="h-4 w-4 mr-2" />
                           Ku káve
                         </Link>
                         <Link
                           href="/my-feed"
-                          className="flex items-center text-zinc-600 hover:text-coffee-700 transition-colors py-1"
+                          className="flex items-center text-zinc-600 hover:text-zinc-700 transition-colors py-1"
                         >
                           <Filter className="h-4 w-4 mr-2" />
                           Môj výber
                         </Link>
                         <Link
                           href="/profile/settings"
-                          className="flex items-center text-zinc-600 hover:text-coffee-700 transition-colors py-1"
+                          className="flex items-center text-zinc-600 hover:text-zinc-700 transition-colors py-1"
                         >
                           <User className="h-4 w-4 mr-2" />
                           Profil
@@ -84,7 +84,7 @@ export function Header() {
                         <Link
                           key={category.slug}
                           href={`/category/${category.slug}`}
-                          className="text-zinc-600 hover:text-coffee-700 transition-colors py-1"
+                          className="text-zinc-600 hover:text-zinc-700 transition-colors py-1"
                         >
                           {category.name}
                         </Link>
@@ -95,12 +95,13 @@ export function Header() {
               </Sheet>
 
               {/* Desktop Logo (left position) */}
-              <Link href="/" className="hidden md:flex items-center ml-2">
-                <div className="relative w-10 h-10">
+              <Link href="/" className="hidden md:flex">
+                <div className="relative w-45 h-4">
                   <Image 
-                    src="/logo-d.png" 
-                    alt="Denná šálka kávy" 
-                    fill
+                    src="/press-logo-simple.png" 
+                    alt="Pressence" 
+                    width={120}
+                    height={10}
                     className="object-contain"
                     priority
                   />
@@ -111,9 +112,9 @@ export function Header() {
             {/* Center section - Mobile Logo */}
             <div className="md:hidden flex justify-center flex-1">
               <Link href="/" className="flex items-center">
-                <div className="relative w-10 h-10">
+                <div className="relative w-20 h-5">
                   <Image 
-                    src="/logo-d.png" 
+                    src="/press-logo-simple.png" 
                     alt="Denná šálka kávy" 
                     fill
                     className="object-contain"
@@ -134,7 +135,7 @@ export function Header() {
               <div className="hidden md:flex items-center gap-4">
                 <Link
                   href="/"
-                  className="flex items-center text-sm text-zinc-900 hover:text-coffee-900 transition-colors"
+                  className="flex items-center text-sm text-zinc-900 hover:underline underline-offset-2 transition-colors"
                   aria-label="Ku káve"
                 >
                   <Coffee className="h-4 w-4 mr-1" />
@@ -143,7 +144,7 @@ export function Header() {
 
                 <Link
                   href="/my-feed"
-                  className="flex items-center text-sm text-zinc-900 hover:text-coffee-900 transition-colors"
+                  className="flex items-center text-sm text-zinc-900 hover:underline underline-offset-2 transition-colors"
                 >
                   <Filter className="h-4 w-4 mr-1" />
                   <span>Môj výber</span>
@@ -151,10 +152,10 @@ export function Header() {
 
                 <Link
                   href="/profile/settings"
-                  className="p-2 rounded-full hover:bg-coffee-100 transition-colors"
+                  className="p-2 bg-zinc-700 rounded-full hover:bg-black transition-colors"
                   aria-label="Profile Settings"
                 >
-                  <User className="h-5 w-5 text-zinc-900" />
+                  <User className="h-5 w-5 text-white" />
                   <span className="sr-only">Profile Settings</span>
                 </Link>
               </div>
@@ -162,7 +163,7 @@ export function Header() {
               {/* Mobile search toggle button */}
               <button 
                 onClick={toggleMobileSearch}
-                className="md:hidden p-2 text-coffee-700 hover:text-coffee-900 transition-colors"
+                className="md:hidden p-2 text-zinc-700 hover:text-zinc-900 transition-colors"
                 aria-label="Toggle Search"
               >
                 {isMobileSearchOpen ? (
@@ -189,13 +190,13 @@ export function Header() {
 
       {/* Bottom header with categories - hidden on mobile */}
       <div className="hidden md:block">
-        <div className="container mx-auto px-4 py-1">
-          <nav className="flex justify-center gap-8">
+        <div className="container mx-auto px-0 py-1">
+          <nav className="grid grid-flow-col auto-cols-fr gap-4">
             {categories.map((category) => (
               <Link
                 key={category.slug}
                 href={`/category/${category.slug}`}
-                className="font-heading px-4 py-3 text-black hover:underline underline-offset-2 transition-colors"
+                className="text-sm block w-full py-3 text-center text-zinc-600 hover:text-zinc-950  hover:underline underline-offset-4 transition-colors"
               >
                 {category.name}
               </Link>

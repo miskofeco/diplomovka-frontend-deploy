@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from "react"
 import { Loader2 } from "lucide-react"
 import dynamic from 'next/dynamic'
+import Link from "next/link"
 import { Header } from "@/components/header"
 import { ScrapeButton } from "../components/scrape-button"
 import { Article } from "@/lib/types"
@@ -35,6 +36,7 @@ export default function HomePage() {
   // Get current date for newspaper header
   const currentDate = new Date()
   const formattedDate = format(currentDate, "EEEE, d. MMMM yyyy", { locale: sk })
+  const capitalizedDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
 
   // Initial load
   useEffect(() => {
@@ -77,10 +79,11 @@ export default function HomePage() {
   }
 
   const heroArticle = articles[0]
-  const otherArticles = articles.slice(1)
+  const featureArticles = articles.slice(1, 5)
+  const otherArticles = articles.slice(5)
   
   // Get last 5 article titles for scrolling banner
-  const last5ArticleTitles = articles.slice(-5).map(article => article.title).filter(Boolean)
+  const last5ArticleTitles = articles.slice(5).map(article => article.title).filter(Boolean)
 
   if (isLoading) {
     return (
@@ -91,44 +94,37 @@ export default function HomePage() {
   }
   
   return (
-    <div className="min-h-screen bg-coffee-10">
+    <div className="min-h-screen bg-white">
       <Header />
-      <ContentContainer>
-      <div className="border-b border-coffee-700 py-12">
-      <div className="flex flex-column items-center">
-        <p className="text-lg text-zinc-700 mb-6 text-center">
-          {formattedDate}
-        </p>
+      <div className="bg-zinc-100">
+        <ContentContainer>
+          <div className="py-12">
+          <div className="flex flex-column items-center">
+            <p className="text-lg text-zinc-600 mb-4 text-center align-middle">
+              {capitalizedDate}
+            </p>
+          </div>
+            <div className="flex flex-row items-center gap-5">
+              <Image 
+                src="/press-logo.png" 
+                alt="Pressence" 
+                width={800} 
+                height={150} 
+                className="h-auto object-contain"
+                style={{
+                  width: "clamp(30rem, 35vw, 45rem)",
+                  height: "auto"
+                }}
+              />
+            </div>
+          </div>
+        </ContentContainer>
       </div>
-        <div className="flex flex-row items-center gap-5">
-          <Image 
-            src="/logo-d.png" 
-            alt="Denná šálka kávy" 
-            width={150} 
-            height={150} 
-            className="h-auto object-contain"
-            style={{
-              width: "clamp(7rem, 8vw, 10rem)",
-              height: "auto"
-            }}
-          />
-          {/* Nadpis */}
-          <h1
-            className="font-serif font-black text-zinc-900 tracking-tight text-left mb-4 leading-none flex-1"
-            style={{
-              fontSize: "clamp(3rem, 6vw, 10rem)",
-              lineHeight: 1,
-            }}
-          >
-            denná šálka kávy
-          </h1>
-        </div>
-        
-
-        {/* Hnedý banner s automaticky posuvnými titulkami */}
-        <div className="mt-5 mb-5 bg-white text-black text-sm md:text-base font-semibold px-4 py-3 overflow-hidden">
+            <div className="border-y border-zinc-300 py-0">
+        <ContentContainer>
+        <div className="bg-white text-zinc-600 text-sm md:text-base font-semibold px-4 py-3 overflow-hidden">
           <div className="flex items-center gap-6">
-            <span className="text-coffee-950 tracking-widest uppercase whitespace-nowrap text-xs md:text-sm">Obsah</span>
+          <span className="text-zinc-600 tracking-widest uppercase whitespace-nowrap text-xs md:text-sm">Obsah</span>
             
             {/* Scrolling titles container */}
             <div className="flex-1 overflow-hidden relative">
@@ -137,7 +133,7 @@ export default function HomePage() {
                 {[...last5ArticleTitles, ...last5ArticleTitles].map((title, index) => (
                   <span 
                     key={index}
-                    className="font-normal text-black/90 inline-block"
+                    className="font-normal text-zinc-600 inline-block"
                   >
                     {title}
                   </span>
@@ -146,11 +142,15 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        
+        </ContentContainer>
+
+      </div>
+      <ContentContainer>
+        <main className="py-8">
         {/* Scrape Button */}
         <ScrapeButton />
-      </div>
-        <main className="py-8">
+          <h1 className="text-4xl pb-8">NAJNOVŠIE ČLÁNKY.</h1>
+
           {/* Hero Article */}
           {heroArticle && (
             <section className="mb-12">
@@ -159,10 +159,31 @@ export default function HomePage() {
               </Suspense>
             </section>
           )}
-
+          {/* Special feature section */}
+        <div className="mb-8 text-center px-4 pb-8 border-b border-t pt-8 border-zinc-600">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {featureArticles.map((article) => (
+              <Link key={article.slug} href={`/articles/${article.slug}`} className="group flex flex-col h-full">
+                <div className="relative aspect-square mb-3 w-full">
+                  <Image
+                    src={article.top_image || "/placeholder.jpg"}
+                    alt={article.title}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <h4 className="text-lg font-serif font-bold mb-2 group-hover:underline underline-offset-4 transition-colors min-h-[3rem] flex items-start">
+                  {article.title}
+                </h4>
+                <p className="text-sm text-zinc-600 mt-auto">{article.category} • {new Date(article.scraped_at).toLocaleDateString("sk-SK")}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+          <h1 className="text-4xl pb-8">OSTATNÉ ČLÁNKY.</h1>
           {/* Latest Articles Grid */}
           <section>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t border-l border-coffee-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border-t border-l border-zinc-200">
               {otherArticles.map((article) => (
                 <Suspense 
                   key={article.slug} 
