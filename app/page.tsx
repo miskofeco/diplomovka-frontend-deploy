@@ -24,7 +24,7 @@ const HeroArticle = dynamic(() => import('@/components/hero-article').then(mod =
 
 const LoadMoreButton = dynamic(() => import('@/components/load-more-button').then(mod => ({ default: mod.LoadMoreButton })))
 
-const ARTICLES_PER_PAGE = 21
+const ARTICLES_PER_PAGE = 22
 
 export default function HomePage() {
   const [articles, setArticles] = useState<Article[]>([])
@@ -146,10 +146,63 @@ export default function HomePage() {
 
       </div>
       <ContentContainer>
+          {/* Publishers strip */}
+          <section className="py-16 text-center">
+            <p className="text-xs tracking-[0.35em] uppercase text-zinc-500">
+              Agregované média
+            </p>
+            <h2 className="mt-4 text-3xl md:text-4xl font-serif text-zinc-900">
+              Monitorujeme dianie v popredných slovenských médiách
+            </h2>
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-10 md:gap-16">
+              <Image
+                src="/aktuality_logo.png"
+                alt="Aktuality logo"
+                width={180}
+                height={48}
+                className="h-10 w-auto object-contain"
+              />
+              <Image
+                src="/sme_logo.png"
+                alt="SME logo"
+                width={160}
+                height={48}
+                className="h-10 w-auto object-contain"
+              />
+              <Image
+                src="/pravda_logo.png"
+                alt="Pravda logo"
+                width={180}
+                height={48}
+                className="h-10 w-auto object-contain"
+              />
+              <Image
+                src="/topky_logo.png"
+                alt="Topky logo"
+                width={160}
+                height={48}
+                className="h-10 w-auto object-contain"
+              />
+              <Image
+                src="/teraz_logo.svg"
+                alt="Teraz logo"
+                width={140}
+                height={40}
+                className="h-8 w-auto object-contain"
+              />
+              <Image
+                src="/hn_logo.png"
+                alt="Hospodarske noviny logo"
+                width={140}
+                height={40}
+                className="h-8 w-auto object-contain"
+              />
+            </div>
+          </section>
+      </ContentContainer>
+      <ContentContainer>
         <main className="py-8">
-        {/* Scrape Button */}
-        <ScrapeButton />
-          <h1 className="text-4xl pb-8">NAJNOVŠIE ČLÁNKY.</h1>
+          <h1 className="text-4xl py-8  border-t border-zinc-600">NAJNOVŠIE ČLÁNKY.</h1>
 
           {/* Hero Article */}
           {heroArticle && (
@@ -159,6 +212,7 @@ export default function HomePage() {
               </Suspense>
             </section>
           )}
+
           {/* Special feature section */}
         <div className="mb-8 text-center px-4 pb-8 border-b border-t pt-8 border-zinc-600">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -200,7 +254,7 @@ export default function HomePage() {
                 <button
                   onClick={loadMoreArticles}
                   disabled={loadingMore}
-                  className="flex items-center gap-2 border border-coffee-800 bg-coffee-100 text-coffee-800 px-6 py-3  hover:bg-coffee-200 disabled:opacity-50"
+                  className="flex items-center gap-2 border border-zinc-600 bg-zinc-100 text-zinc-800 px-6 py-3  hover:bg-zinc-200 disabled:opacity-50"
                 >
                   {loadingMore && <Loader2 className="h-4 w-4 animate-spin" />}
                   {loadingMore ? 'Načítavam...' : 'Načítať viac článkov'}

@@ -72,7 +72,7 @@ export function HeroArticle({ article }: { article: Article }) {
         </div>
 
         {/* Title with hover underline */}
-        <h2 className="text-3xl font-bold text-zinc-900 border-b pb-2 border-zinc-800 mb-4 md:mb-8 group-hover:underline underline-offset-4">
+        <h2 className="text-3xl font-bold text-zinc-900 border-b pb-2 border-zinc-800 mb-2 md:mb-4 group-hover:underline underline-offset-4">
           {article.title}
         </h2>
 

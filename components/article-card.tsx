@@ -60,7 +60,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
                   key={index}
                   src={favicon} 
                   alt={domains[index]}
-                  className="w-4 h-4 rounded-sm"
+                  className="w-4 h-4"
                   title={domains[index]}
                 />
               ))}

@@ -42,6 +42,7 @@ export function useSearch() {
         category?: string;
         tags?: string | string[];
         scraped_at?: string;
+        match_score?: number;
       }
 
       const articles: Article[] = (data as RawSearchResult[])
