@@ -2,6 +2,23 @@ import { Article, FactCheckResults, SummaryAnnotations } from './types'
 import { createSlug } from "@/lib/utils"
 import { buildApiUrl } from "@/lib/api-url"
 
+const FRONTEND_FETCH_TIMEOUT_MS = 15000
+
+async function fetchWithTimeout(
+  input: RequestInfo | URL,
+  init: RequestInit = {},
+  timeoutMs: number = FRONTEND_FETCH_TIMEOUT_MS
+): Promise<Response> {
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
+
+  try {
+    return await fetch(input, { ...init, signal: controller.signal })
+  } finally {
+    clearTimeout(timeoutId)
+  }
+}
+
 function parseMaybeJson<T>(value: unknown): T | null {
   if (value === null || value === undefined) {
     return null
@@ -37,7 +54,7 @@ export async function getArticles(limit?: number, offset?: number): Promise<Arti
     
     console.log('Fetching articles from:', url);
     
-    const res = await fetch(url, {
+    const res = await fetchWithTimeout(url, {
       next: { 
         revalidate: 300, // Revalidácia každých 5 minút
         tags: ['articles']
@@ -75,6 +92,10 @@ export async function getArticles(limit?: number, offset?: number): Promise<Arti
       summary_annotations: parseMaybeJson<SummaryAnnotations>(article.summary_annotations)
     }))
   } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      console.error('Failed to fetch articles: request timed out')
+      return []
+    }
     console.error('Failed to fetch articles:', error)
     return []
   }
@@ -98,7 +119,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
       return null
     }
 
-    const response = await fetch(detailsUrl)
+    const response = await fetchWithTimeout(detailsUrl)
     if (response.ok) {
       const article = await response.json()
       console.log('Found article via details endpoint with ID:', article.id)
@@ -124,6 +145,10 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
     console.warn('Article not found for slug:', slug)
     return null
   } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      console.error('Failed to fetch article by slug: request timed out')
+      return null
+    }
     console.error('Failed to fetch article by slug:', error)
     return null
   }

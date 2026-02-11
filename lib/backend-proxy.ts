@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server"
 
 import { getBackendApiUrl } from "@/lib/admin-auth"
 
+const BACKEND_PROXY_TIMEOUT_MS = Number(
+  process.env.BACKEND_PROXY_TIMEOUT_MS || "15000"
+)
+
 function parseBackendPayload(rawText: string): unknown {
   if (!rawText) {
     return {}
@@ -45,17 +49,31 @@ export async function proxyBackendRequest(
     method === "GET" || method === "HEAD" ? undefined : await request.text()
 
   try {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), BACKEND_PROXY_TIMEOUT_MS)
+
     const backendResponse = await fetch(targetUrl, {
       method,
       headers,
       cache: "no-store",
+      signal: controller.signal,
       body: body && body.length > 0 ? body : undefined,
-    })
+    }).finally(() => clearTimeout(timeoutId))
 
     const rawText = await backendResponse.text()
     const parsedPayload = parseBackendPayload(rawText)
     return NextResponse.json(parsedPayload, { status: backendResponse.status })
   } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      return NextResponse.json(
+        {
+          error: "Backend request timed out.",
+          details: `No response within ${BACKEND_PROXY_TIMEOUT_MS}ms.`,
+        },
+        { status: 504 }
+      )
+    }
+
     return NextResponse.json(
       {
         error: "Failed to contact backend.",
@@ -65,4 +83,3 @@ export async function proxyBackendRequest(
     )
   }
 }
-
