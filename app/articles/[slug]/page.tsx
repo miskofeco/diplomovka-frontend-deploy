@@ -50,6 +50,17 @@ export default async function ArticlePage({ params }: PageProps) {
     a.slug !== article.slug
   ).slice(0, 10)
 
+  const factCheck = article.fact_check_results
+  const factCheckFacts = Array.isArray(factCheck?.facts) ? factCheck.facts : []
+  const showFactCheckSection = Boolean(factCheck?.status) || factCheckFacts.length > 0
+
+  const statusBadgeClass =
+    factCheck?.status === "Overene fakty"
+      ? "bg-emerald-100 text-emerald-800"
+      : factCheck?.status === "Ciastocne overene fakty"
+        ? "bg-amber-100 text-amber-800"
+        : "bg-rose-100 text-rose-800"
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Header />
@@ -123,6 +134,41 @@ export default async function ArticlePage({ params }: PageProps) {
             {article.content}
           </div>
 
+          {showFactCheckSection && (
+            <section className="border-t border-zinc-800 pt-6 mt-8">
+              <h3 className="text-lg font-semibold mb-3 text-zinc-900">Overenie faktov</h3>
+              {factCheck?.status && (
+                <div className="mb-4">
+                  <span className={`inline-block text-sm px-3 py-1 ${statusBadgeClass}`}>
+                    {factCheck.status}
+                  </span>
+                </div>
+              )}
+
+              {factCheckFacts.length > 0 && (
+                <div className="space-y-3">
+                  {factCheckFacts.map((item, index) => (
+                    <div key={index} className="p-3 bg-zinc-50 border border-zinc-200">
+                      <p className="text-zinc-900 text-sm mb-1">{item.fact || "Fakt nie je dostupný"}</p>
+                      {item.source_url ? (
+                        <a
+                          href={item.source_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-coffee-700 hover:underline"
+                        >
+                          {item.source_title || item.source_url}
+                        </a>
+                      ) : (
+                        <p className="text-sm text-zinc-600">Zdroj nebol nájdený.</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+          )}
+
           <div className="border-t border-zinc-800 pt-6 mt-8">
             <h3 className="text-lg font-semibold mb-4 text-zinc-900">Zdroje článku:</h3>
             <ArticleSourcesList article={article} />
@@ -141,5 +187,4 @@ export default async function ArticlePage({ params }: PageProps) {
     </div>
   )
 }
-
 

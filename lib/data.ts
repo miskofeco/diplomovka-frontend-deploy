@@ -3,6 +3,23 @@ import { createSlug } from "@/lib/utils"
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
 
+function parseMaybeJson<T>(value: unknown): T | null {
+  if (value === null || value === undefined) {
+    return null
+  }
+  if (typeof value === 'string') {
+    try {
+      return JSON.parse(value) as T
+    } catch {
+      return null
+    }
+  }
+  if (typeof value === 'object') {
+    return value as T
+  }
+  return null
+}
+
 export async function getArticles(limit?: number, offset?: number): Promise<Article[]> {
   try {
     let url = `${API_BASE}/api/articles`;
@@ -50,7 +67,9 @@ export async function getArticles(limit?: number, offset?: number): Promise<Arti
       url: Array.isArray(article.url) ? article.url : [article.url || ''],
       category: article.category || 'uncategorized',
       tags: Array.isArray(article.tags) ? article.tags : article.tags ? [article.tags] : [],
-      scraped_at: article.scraped_at || new Date().toISOString()
+      scraped_at: article.scraped_at || new Date().toISOString(),
+      fact_check_results: parseMaybeJson(article.fact_check_results),
+      summary_annotations: parseMaybeJson(article.summary_annotations)
     }))
   } catch (error) {
     console.error('Failed to fetch articles:', error)
@@ -87,7 +106,9 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
         url: Array.isArray(article.url) ? article.url : [article.url || ''],
         category: article.category || 'uncategorized',
         tags: Array.isArray(article.tags) ? article.tags : article.tags ? [article.tags] : [],
-        scraped_at: article.scraped_at || new Date().toISOString()
+        scraped_at: article.scraped_at || new Date().toISOString(),
+        fact_check_results: parseMaybeJson(article.fact_check_results),
+        summary_annotations: parseMaybeJson(article.summary_annotations)
       }
     }
     
@@ -98,5 +119,3 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
     return null
   }
 }
-
-

@@ -190,19 +190,15 @@ export default function HomePage() {
                 height={40}
                 className="h-8 w-auto object-contain"
               />
-              <Image
-                src="/hn_logo.png"
-                alt="Hospodarske noviny logo"
-                width={140}
-                height={40}
-                className="h-8 w-auto object-contain"
-              />
             </div>
           </section>
       </ContentContainer>
       <ContentContainer>
         <main className="py-8">
           <h1 className="text-4xl py-8  border-t border-zinc-600">NAJNOVŠIE ČLÁNKY.</h1>
+          <div className="mb-8">
+            <ScrapeButton />
+          </div>
 
           {/* Hero Article */}
           {heroArticle && (

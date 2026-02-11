@@ -3,6 +3,19 @@ import { Article } from '@/lib/types'
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
 
+function parseMaybeJson<T>(value: unknown): T | null {
+  if (value === null || value === undefined) return null
+  if (typeof value === 'string') {
+    try {
+      return JSON.parse(value) as T
+    } catch {
+      return null
+    }
+  }
+  if (typeof value === 'object') return value as T
+  return null
+}
+
 export function useSearch() {
   const [results, setResults] = useState<Article[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -38,7 +51,9 @@ export function useSearch() {
         url: Array.isArray(article.url) ? article.url : [article.url || ''],
         category: article.category || 'uncategorized',
         tags: Array.isArray(article.tags) ? article.tags : article.tags ? [article.tags] : [],
-        scraped_at: article.scraped_at || new Date().toISOString()
+        scraped_at: article.scraped_at || new Date().toISOString(),
+        fact_check_results: parseMaybeJson(article.fact_check_results),
+        summary_annotations: parseMaybeJson(article.summary_annotations)
       }))
 
       setResults(articles)
