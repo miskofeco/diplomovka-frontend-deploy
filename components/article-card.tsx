@@ -21,6 +21,13 @@ export function ArticleCard({ article }: ArticleCardProps) {
   const favicons = domains.map(domain => 
     domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=16` : ""
   ).filter(Boolean)
+  const factCheck = article.fact_check_results
+  const isVerified = factCheck?.status === "Overene fakty"
+  const factCheckBadgeSrc = isVerified ? "/verify.png" : "/unverify.png"
+  const factCheckBadgeAlt = isVerified ? "Overené fakty" : "Neoverené fakty"
+  const factCheckBadgeTitle = factCheck?.checked_at
+    ? (factCheck.status || factCheckBadgeAlt)
+    : "Článok nebol overený"
 
   return (
     <Link href={`/articles/${article.slug}`}>
@@ -34,11 +41,19 @@ export function ArticleCard({ article }: ArticleCardProps) {
           />
         </div>
         <div className="flex flex-col flex-grow">
-          {/* Category displayed at the top */}
-          <div className="mb-2">
+          {/* Category + fact-check status */}
+          <div className="mb-2 flex flex-wrap items-center gap-2">
             <span className="text-xs px-3 py-1 bg-coffee-700 text-white">
               {article.category}
             </span>
+            <Image
+              src={factCheckBadgeSrc}
+              alt={factCheckBadgeAlt}
+              title={factCheckBadgeTitle}
+              width={20}
+              height={20}
+              className="h-5 w-5 object-contain"
+            />
           </div>
           
           {/* Time and source icons */}

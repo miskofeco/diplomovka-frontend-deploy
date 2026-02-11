@@ -136,40 +136,59 @@ export function ArticleSuggestions({
         className="flex overflow-x-auto scrollbar-hide gap-4 pb-4 px-2 -mx-2"
         onScroll={handleScroll}
       >
-        {articlesToShow.slice(0, 10).map((article, index) => (
-          <Link 
-            key={`${article.id}-${index}`}
-            href={`/articles/${article.slug}`}
-            className="flex-shrink-0 w-[280px] border border-zinc-200 rounded-md overflow-hidden hover:shadow-lg transition-all duration-200 hover:border-coffee-200 group"
-          >
-            <div className="relative h-36 w-full">
-              <Image
-                src={article.top_image || "/placeholder.jpg"}
-                alt={article.title}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-200"
-              />
-              {/* AI indicator overlay */}
-              <div className="absolute top-2 left-2 bg-coffee-600/90 text-white text-xs px-2 py-1 rounded flex items-center gap-1">
-                <Brain className="h-3 w-3" />
-                AI
+        {articlesToShow.slice(0, 10).map((article, index) => {
+          const isVerified = article.fact_check_results?.status === "Overene fakty"
+          const factCheckBadgeSrc = isVerified ? "/verify.png" : "/unverify.png"
+          const factCheckBadgeAlt = isVerified ? "Overené fakty" : "Neoverené fakty"
+          const factCheckBadgeTitle = article.fact_check_results?.checked_at
+            ? (article.fact_check_results?.status || factCheckBadgeAlt)
+            : "Článok nebol overený"
+
+          return (
+            <Link 
+              key={`${article.id}-${index}`}
+              href={`/articles/${article.slug}`}
+              className="flex-shrink-0 w-[280px] border border-zinc-200 rounded-md overflow-hidden hover:shadow-lg transition-all duration-200 hover:border-coffee-200 group"
+            >
+              <div className="relative h-36 w-full">
+                <Image
+                  src={article.top_image || "/placeholder.jpg"}
+                  alt={article.title}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-200"
+                />
+                {/* AI indicator overlay */}
+                <div className="absolute top-2 left-2 bg-coffee-600/90 text-white text-xs px-2 py-1 rounded flex items-center gap-1">
+                  <Brain className="h-3 w-3" />
+                  AI
+                </div>
+                <div className="absolute top-2 right-2">
+                  <Image
+                    src={factCheckBadgeSrc}
+                    alt={factCheckBadgeAlt}
+                    title={factCheckBadgeTitle}
+                    width={22}
+                    height={22}
+                    className="h-6 w-6 object-contain"
+                  />
+                </div>
               </div>
-            </div>
-            <div className="p-3">
-              <h4 className="font-medium text-zinc-900 line-clamp-2 mb-2 h-12 group-hover:text-coffee-700 transition-colors">
-                {article.title}
-              </h4>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-zinc-500">
-                  {new Date(article.scraped_at).toLocaleDateString("sk-SK")}
-                </span>
-                <span className="text-xs px-2 py-1 bg-coffee-100 text-coffee-700 rounded">
-                  {article.category}
-                </span>
+              <div className="p-3">
+                <h4 className="font-medium text-zinc-900 line-clamp-2 mb-2 h-12 group-hover:text-coffee-700 transition-colors">
+                  {article.title}
+                </h4>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-zinc-500">
+                    {new Date(article.scraped_at).toLocaleDateString("sk-SK")}
+                  </span>
+                  <span className="text-xs px-2 py-1 bg-coffee-100 text-coffee-700 rounded">
+                    {article.category}
+                  </span>
+                </div>
               </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          )
+        })}
       </div>
     </div>
   )

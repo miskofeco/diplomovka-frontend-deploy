@@ -1,4 +1,4 @@
-import { Article } from './types'
+import { Article, FactCheckResults, SummaryAnnotations } from './types'
 import { createSlug } from "@/lib/utils"
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
@@ -68,8 +68,8 @@ export async function getArticles(limit?: number, offset?: number): Promise<Arti
       category: article.category || 'uncategorized',
       tags: Array.isArray(article.tags) ? article.tags : article.tags ? [article.tags] : [],
       scraped_at: article.scraped_at || new Date().toISOString(),
-      fact_check_results: parseMaybeJson(article.fact_check_results),
-      summary_annotations: parseMaybeJson(article.summary_annotations)
+      fact_check_results: parseMaybeJson<FactCheckResults>(article.fact_check_results),
+      summary_annotations: parseMaybeJson<SummaryAnnotations>(article.summary_annotations)
     }))
   } catch (error) {
     console.error('Failed to fetch articles:', error)
@@ -107,8 +107,8 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
         category: article.category || 'uncategorized',
         tags: Array.isArray(article.tags) ? article.tags : article.tags ? [article.tags] : [],
         scraped_at: article.scraped_at || new Date().toISOString(),
-        fact_check_results: parseMaybeJson(article.fact_check_results),
-        summary_annotations: parseMaybeJson(article.summary_annotations)
+        fact_check_results: parseMaybeJson<FactCheckResults>(article.fact_check_results),
+        summary_annotations: parseMaybeJson<SummaryAnnotations>(article.summary_annotations)
       }
     }
     

@@ -10,6 +10,13 @@ interface FeedArticleCardProps {
 }
 
 export function FeedArticleCard({ article, isWide = false }: FeedArticleCardProps) {
+  const isVerified = article.fact_check_results?.status === "Overene fakty"
+  const factCheckBadgeSrc = isVerified ? "/verify.png" : "/unverify.png"
+  const factCheckBadgeAlt = isVerified ? "Overené fakty" : "Neoverené fakty"
+  const factCheckBadgeTitle = article.fact_check_results?.checked_at
+    ? (article.fact_check_results?.status || factCheckBadgeAlt)
+    : "Článok nebol overený"
+
   return (
     <Link 
       href={`/articles/${article.slug}`}
@@ -22,6 +29,16 @@ export function FeedArticleCard({ article, isWide = false }: FeedArticleCardProp
           fill
           className="object-cover"
         />
+        <div className="absolute top-2 right-2">
+          <Image
+            src={factCheckBadgeSrc}
+            alt={factCheckBadgeAlt}
+            title={factCheckBadgeTitle}
+            width={20}
+            height={20}
+            className="h-5 w-5 object-contain"
+          />
+        </div>
       </div>
       <div className="flex flex-col flex-grow">
         <h4 className="text-lg font-serif font-bold mb-2 group-hover:text-coffee-800 transition-colors min-h-[3rem] flex items-start">

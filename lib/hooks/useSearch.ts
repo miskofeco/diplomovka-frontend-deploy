@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { Article } from '@/lib/types'
+import { Article, FactCheckResults, SummaryAnnotations } from '@/lib/types'
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
 
@@ -73,8 +73,8 @@ export function useSearch() {
           category: article.category || 'uncategorized',
           tags: Array.isArray(article.tags) ? article.tags : article.tags ? [article.tags] : [],
           scraped_at: article.scraped_at || new Date().toISOString(),
-          fact_check_results: parseMaybeJson(article.fact_check_results),
-          summary_annotations: parseMaybeJson(article.summary_annotations)
+          fact_check_results: parseMaybeJson<FactCheckResults>(article.fact_check_results),
+          summary_annotations: parseMaybeJson<SummaryAnnotations>(article.summary_annotations)
         }))
         .filter((article: Article, index: number, self: Article[]) => 
           index === self.findIndex((a: Article) => a.title === article.title)
