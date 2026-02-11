@@ -138,7 +138,7 @@ export function ArticleSuggestions({
       >
         {articlesToShow.slice(0, 10).map((article, index) => {
           const isVerified = article.fact_check_results?.status === "Overene fakty"
-          const factCheckBadgeSrc = isVerified ? "/verify.png" : "/unverify.png"
+          const factCheckBadgeSrc = isVerified ? "/verify_green.png" : "/delete.png"
           const factCheckBadgeAlt = isVerified ? "Overené fakty" : "Neoverené fakty"
           const factCheckBadgeTitle = article.fact_check_results?.checked_at
             ? (article.fact_check_results?.status || factCheckBadgeAlt)

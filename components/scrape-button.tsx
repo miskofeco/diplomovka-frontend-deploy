@@ -1,20 +1,38 @@
 'use client'
 
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 export function ScrapeButton() {
+  const [isSessionLoading, setIsSessionLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isPerSourceLoading, setIsPerSourceLoading] = useState(false)
   const [isFactCheckLoading, setIsFactCheckLoading] = useState(false)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
   const router = useRouter()
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001"
+
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const response = await fetch("/api/admin/session", { cache: "no-store" })
+        const payload = (await response.json()) as { authenticated?: boolean }
+        setIsAuthenticated(Boolean(payload.authenticated))
+      } catch {
+        setIsAuthenticated(false)
+      } finally {
+        setIsSessionLoading(false)
+      }
+    }
+
+    checkSession()
+  }, [])
 
   const handlePerSourceScrape = async () => {
     setIsPerSourceLoading(true)
     try {
-      const response = await fetch(`${API_BASE}/api/scrape-per-source`, {
+      const response = await fetch("/api/admin/scrape-per-source", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -27,6 +45,9 @@ export function ScrapeButton() {
       })
 
       if (!response.ok) {
+        if (response.status === 401) {
+          setIsAuthenticated(false)
+        }
         throw new Error('Failed to scrape 3 articles per source')
       }
       await new Promise(resolve => setTimeout(resolve, 2000))
@@ -41,7 +62,7 @@ export function ScrapeButton() {
   const handleOverallWithFactCheck = async () => {
     setIsFactCheckLoading(true)
     try {
-      const response = await fetch(`${API_BASE}/api/scrape-with-fact-check`, {
+      const response = await fetch("/api/admin/scrape-with-fact-check", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -54,6 +75,9 @@ export function ScrapeButton() {
       })
 
       if (!response.ok) {
+        if (response.status === 401) {
+          setIsAuthenticated(false)
+        }
         throw new Error('Failed to scrape and fact-check articles')
       }
 
@@ -66,7 +90,24 @@ export function ScrapeButton() {
     }
   }
 
-  const isAnyLoading = isPerSourceLoading || isFactCheckLoading
+  const handleLogout = async () => {
+    setIsLoggingOut(true)
+    try {
+      await fetch("/api/admin/logout", { method: "POST" })
+      setIsAuthenticated(false)
+      router.refresh()
+    } catch (error) {
+      console.error("Error logging out admin session:", error)
+    } finally {
+      setIsLoggingOut(false)
+    }
+  }
+
+  const isAnyLoading = isPerSourceLoading || isFactCheckLoading || isLoggingOut
+
+  if (isSessionLoading || !isAuthenticated) {
+    return null
+  }
 
   return (
     <div className="flex flex-col md:flex-row gap-3">
@@ -97,6 +138,21 @@ export function ScrapeButton() {
           </>
         ) : (
           "Spracovať 3 články celkovo + overiť fakty"
+        )}
+      </Button>
+
+      <Button
+        onClick={handleLogout}
+        disabled={isAnyLoading}
+        variant="ghost"
+      >
+        {isLoggingOut ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Odhlasujem...
+          </>
+        ) : (
+          "Odhlásiť admin"
         )}
       </Button>
     </div>
