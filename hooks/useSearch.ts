@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react'
 import { Article, FactCheckResults, SummaryAnnotations } from '@/lib/types'
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
+import { buildApiUrl } from "@/lib/api-url"
 
 function parseMaybeJson<T>(value: unknown): T | null {
   if (value === null || value === undefined) return null
@@ -31,7 +30,9 @@ export function useSearch() {
     setError(null)
 
     try {
-      const response = await fetch(`${API_BASE}/api/articles/search?q=${encodeURIComponent(query)}`)
+      const response = await fetch(
+        `${buildApiUrl("/api/articles/search")}?q=${encodeURIComponent(query)}`
+      )
       
       if (!response.ok) {
         throw new Error('Search failed')

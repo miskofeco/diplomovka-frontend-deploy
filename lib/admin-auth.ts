@@ -4,7 +4,11 @@ export const ADMIN_SESSION_COOKIE_NAME = "processing_admin_session"
 export const ADMIN_SESSION_COOKIE_VALUE = "active"
 export const ADMIN_SESSION_MAX_AGE_SECONDS = 60 * 60 * 12
 
-const DEFAULT_BACKEND_API_URL = "http://localhost:5001"
+const DEV_BACKEND_API_URL = "http://localhost:5001"
+
+function normalizeBaseUrl(value: string | undefined): string {
+  return (value || "").trim().replace(/\/+$/, "")
+}
 
 export function isAdminSessionValue(value: string | undefined): boolean {
   return value === ADMIN_SESSION_COOKIE_VALUE
@@ -19,12 +23,18 @@ export function getProcessingAdminToken(): string {
 }
 
 export function getBackendApiUrl(): string {
-  const raw =
-    process.env.BACKEND_API_URL ||
-    process.env.NEXT_PUBLIC_API_URL ||
-    DEFAULT_BACKEND_API_URL
+  const configured = normalizeBaseUrl(
+    process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL
+  )
+  if (configured) {
+    return configured
+  }
 
-  return raw.replace(/\/+$/, "")
+  if (process.env.NODE_ENV !== "production") {
+    return DEV_BACKEND_API_URL
+  }
+
+  return ""
 }
 
 export function matchesAdminToken(candidate: string): boolean {
@@ -41,4 +51,3 @@ export function matchesAdminToken(candidate: string): boolean {
 
   return timingSafeEqual(expectedBuffer, candidateBuffer)
 }
-

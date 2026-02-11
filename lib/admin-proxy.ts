@@ -60,7 +60,18 @@ export async function proxyAdminPost(
   }
 
   const payload = await readRequestBody(request)
-  const backendUrl = `${getBackendApiUrl()}${backendPath}`
+  const backendBaseUrl = getBackendApiUrl()
+  if (!backendBaseUrl) {
+    return NextResponse.json(
+      {
+        error:
+          "Backend API URL is not configured. Set BACKEND_API_URL (or NEXT_PUBLIC_API_URL).",
+      },
+      { status: 503 }
+    )
+  }
+
+  const backendUrl = `${backendBaseUrl}${backendPath}`
   const adminToken = getProcessingAdminToken()
 
   try {
@@ -87,4 +98,3 @@ export async function proxyAdminPost(
     )
   }
 }
-

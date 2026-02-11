@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
+import { buildApiUrl } from "@/lib/api-url"
 
 interface UrlOrientation {
   orientation: 'left' | 'right' | 'neutral'
@@ -24,7 +23,7 @@ export function useUrlOrientations(urls: string[]) {
       setError(null)
 
       try {
-        const response = await fetch(`${API_BASE}/api/url-orientations`, {
+        const response = await fetch(buildApiUrl("/api/url-orientations"), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

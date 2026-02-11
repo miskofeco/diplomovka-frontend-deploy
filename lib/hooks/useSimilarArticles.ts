@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Article, FactCheckResults, SummaryAnnotations } from '@/lib/types'
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
+import { buildApiUrl } from "@/lib/api-url"
 
 function parseMaybeJson<T>(value: unknown): T | null {
   if (value === null || value === undefined) return null
@@ -36,7 +35,7 @@ export function useSimilarArticles(articleId: string | null) {
       setError(null)
 
       try {
-        const url = `${API_BASE}/api/articles/${articleId}/similar`
+        const url = buildApiUrl(`/api/articles/${articleId}/similar`)
         console.log('Fetching from URL:', url)
         
         const response = await fetch(url)

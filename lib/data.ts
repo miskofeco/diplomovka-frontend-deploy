@@ -1,7 +1,6 @@
 import { Article, FactCheckResults, SummaryAnnotations } from './types'
 import { createSlug } from "@/lib/utils"
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'
+import { buildApiUrl } from "@/lib/api-url"
 
 function parseMaybeJson<T>(value: unknown): T | null {
   if (value === null || value === undefined) {
@@ -22,7 +21,11 @@ function parseMaybeJson<T>(value: unknown): T | null {
 
 export async function getArticles(limit?: number, offset?: number): Promise<Article[]> {
   try {
-    let url = `${API_BASE}/api/articles`;
+    let url = buildApiUrl("/api/articles")
+    if (typeof window === "undefined" && url.startsWith("/")) {
+      console.error("API base URL is not configured for server-side fetching.")
+      return []
+    }
     
     // Add pagination parameters if provided
     if (limit !== undefined || offset !== undefined) {
@@ -89,7 +92,13 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
     }
     
     // If not found, try the details endpoint
-    const response = await fetch(`${API_BASE}/api/articles/${slug}/details`)
+    const detailsUrl = buildApiUrl(`/api/articles/${slug}/details`)
+    if (typeof window === "undefined" && detailsUrl.startsWith("/")) {
+      console.error("API base URL is not configured for server-side fetching.")
+      return null
+    }
+
+    const response = await fetch(detailsUrl)
     if (response.ok) {
       const article = await response.json()
       console.log('Found article via details endpoint with ID:', article.id)
