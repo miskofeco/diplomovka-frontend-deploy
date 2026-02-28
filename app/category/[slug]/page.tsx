@@ -55,18 +55,18 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     <div className="min-h-screen bg-white">
       <Header />
 
-      <div className="bg-zinc-100">
+      <div className="bg-white">
         <ContentContainer>
-          <div className="pt-12">
+          <div className="pt-8">
             <div className="flex flex-column items-center">
-              <p className="text-lg text-zinc-600 mb-4 text-center align-middle">
+              <p className="text-md text-zinc-600 mb-4 text-center align-middle">
                 {capitalizedDate}
               </p>
             </div>
             <h1
               className="w-full pb-10 text-left font-serif tracking-tight text-zinc-900 leading-none"
               style={{
-                fontSize: "clamp(2.5rem, 5vw, 7rem)",
+                fontSize: "clamp(1.5rem, 3vw, 5rem)",
                 lineHeight: 1,
                 whiteSpace: "nowrap",
               }}

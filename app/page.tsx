@@ -14,15 +14,17 @@ import { getArticles } from "@/lib/data"
 import { IntentPrefetchLink } from "@/components/intent-prefetch-link"
 
 const ARTICLES_PER_PAGE = 22
+const SECTION_HEADING_CLASS = "border-t border-zinc-300 py-6 text-3xl md:text-[2rem]"
+const SECTION_SUBHEADING_CLASS = "border-t border-zinc-300 pb-6 pt-8 text-3xl md:text-[2rem]"
 
 function StreamingHomeContentFallback() {
   return (
     <ContentContainer>
       <main className="py-8">
         <BackendStartupNotice />
-        <h1 className="text-4xl py-8 border-t border-zinc-600">NAJNOVŠIE ČLÁNKY.</h1>
+        <h1 className={SECTION_HEADING_CLASS}>NAJNOVŠIE ČLÁNKY.</h1>
         <HeroArticleSkeleton />
-        <h2 className="text-4xl pb-8 pt-10">OSTATNÉ ČLÁNKY.</h2>
+        <h2 className={SECTION_SUBHEADING_CLASS}>OSTATNÉ ČLÁNKY.</h2>
         <div className="grid grid-cols-1 border-l border-t border-zinc-200 md:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, index) => (
             <ArticleCardSkeleton key={index} />
@@ -43,7 +45,7 @@ async function LatestArticlesSection() {
     return (
       <ContentContainer>
         <main className="py-8">
-          <h1 className="text-4xl py-8 border-t border-zinc-600">NAJNOVŠIE ČLÁNKY.</h1>
+          <h1 className={SECTION_HEADING_CLASS}>NAJNOVŠIE ČLÁNKY.</h1>
           <div className="mb-8">
             <ScrapeButton />
           </div>
@@ -61,7 +63,7 @@ async function LatestArticlesSection() {
   return (
     <ContentContainer>
       <main className="py-8">
-        <h1 className="text-4xl py-8 border-t border-zinc-600">NAJNOVŠIE ČLÁNKY.</h1>
+        <h1 className={SECTION_HEADING_CLASS}>NAJNOVŠIE ČLÁNKY.</h1>
         <div className="mb-8">
           <ScrapeButton />
         </div>
@@ -72,7 +74,7 @@ async function LatestArticlesSection() {
           </section>
         )}
 
-        <div className="mb-8 border-b border-t border-zinc-600 px-4 pb-8 pt-8 text-center">
+        <div className="mb-6 px-4 pb-8 pt-8 text-center">
           <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
             {featureArticles.map((article) => (
               <IntentPrefetchLink
@@ -100,7 +102,7 @@ async function LatestArticlesSection() {
           </div>
         </div>
 
-        <h2 className="text-4xl pb-8">OSTATNÉ ČLÁNKY.</h2>
+        <h2 className={SECTION_SUBHEADING_CLASS}>OSTATNÉ ČLÁNKY.</h2>
         <section>
           <div className="grid grid-cols-1 border-l border-t border-zinc-200 md:grid-cols-2 lg:grid-cols-3">
             {otherArticles.map((article) => (
@@ -126,32 +128,6 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      <div className="bg-zinc-100">
-        <ContentContainer>
-          <div className="py-12">
-            <div className="flex flex-column items-center">
-              <p className="text-lg text-zinc-600 mb-4 text-center align-middle">
-                {capitalizedDate}
-              </p>
-            </div>
-            <div className="flex flex-row items-center gap-5">
-              <Image
-                src="/press-logo.png"
-                alt="Pressence"
-                width={800}
-                height={150}
-                className="h-auto object-contain"
-                priority
-                style={{
-                  width: "clamp(30rem, 35vw, 45rem)",
-                  height: "auto",
-                }}
-              />
-            </div>
-          </div>
-        </ContentContainer>
-      </div>
-
       <ContentContainer>
         <section className="py-16 text-center">
           <p className="text-xs tracking-[0.35em] uppercase text-zinc-500">
@@ -166,35 +142,35 @@ export default function HomePage() {
               alt="Aktuality logo"
               width={180}
               height={48}
-              className="h-6 md:h-10 w-auto object-contain"
+              className="h-5 md:h-8 w-auto object-contain"
             />
             <Image
               src="/sme_logo.png"
               alt="SME logo"
               width={160}
               height={48}
-              className="h-6 md:h-10 w-auto object-contain"
+              className="h-5 md:h-8 w-auto object-contain"
             />
             <Image
               src="/pravda_logo.png"
               alt="Pravda logo"
               width={180}
               height={48}
-              className="h-6 md:h-10 w-auto object-contain"
+              className="h-5 md:h-8 w-auto object-contain"
             />
             <Image
               src="/topky_logo.png"
               alt="Topky logo"
               width={160}
               height={48}
-              className="h-6 md:h-10 w-auto object-contain"
+              className="h-5 md:h-8 w-auto object-contain"
             />
             <Image
               src="/teraz_logo.svg"
               alt="Teraz logo"
               width={140}
               height={40}
-              className="h-5 md:h-8 w-auto object-contain"
+              className="h-5 md:h-6 w-auto object-contain"
             />
           </div>
         </section>

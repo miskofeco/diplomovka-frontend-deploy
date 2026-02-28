@@ -19,7 +19,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
 
   const factCheck = article.fact_check_results
   const isVerified = factCheck?.status === "Overene fakty"
-  const factCheckBadgeSrc = isVerified ? "/verify_green.png" : "/delete.png"
+  const factCheckBadgeSrc = isVerified ? "/checkmarks.png" : "/cross.png"
   const factCheckBadgeAlt = isVerified ? "Overené fakty" : "Neoverené fakty"
   const factCheckBadgeTitle = factCheck?.checked_at
     ? (factCheck.status || factCheckBadgeAlt)

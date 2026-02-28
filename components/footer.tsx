@@ -1,6 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
-import { Github } from "lucide-react"
+import { Gitlab } from "lucide-react"
 import { ContentContainer } from "./content-container"
 
 export function Footer() {
@@ -30,13 +30,13 @@ export function Footer() {
           <div className="flex flex-col items-center md:items-end">
             <div className="flex items-center mb-2">
               <a 
-                href="https://github.com/michal-feco/diplomovka-kod" 
+                href="https://git.kpi.fei.tuke.sk/kpi-zp/2026/dp.michal.feco/diplomovka-kod" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="flex items-center text-zinc-700 hover:text-zinc-900 transition-colors"
               >
-                <Github className="h-5 w-5 mr-2" />
-                <span>GitHub Repository</span>
+                <Gitlab className="h-5 w-5 mr-2" />
+                <span>GitLab Repository</span>
               </a>
             </div>
             <p className="text-zinc-700 text-sm">
