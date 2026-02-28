@@ -3,6 +3,9 @@ import { createSlug } from "@/lib/utils"
 import { Article, FactCheckResults, SummaryAnnotations } from "./types"
 
 const FRONTEND_FETCH_TIMEOUT_MS = 15000
+const SERVER_FETCH_TIMEOUT_MS = 45000
+const SERVER_ARTICLES_FETCH_RETRY_ATTEMPTS = 4
+const SERVER_ARTICLES_FETCH_RETRY_DELAY_MS = 4000
 let hasLoggedArticlesFetchError = false
 let hasLoggedArticleDetailsFetchError = false
 
@@ -19,6 +22,58 @@ async function fetchWithTimeout(
   } finally {
     clearTimeout(timeoutId)
   }
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
+}
+
+function isRetryableStatus(status: number): boolean {
+  return status === 408 || status === 425 || status === 429 || status === 500 || status === 502 || status === 503 || status === 504
+}
+
+async function fetchArticlesResponse(url: string): Promise<Response> {
+  const isServer = typeof window === "undefined"
+  const maxAttempts = isServer ? SERVER_ARTICLES_FETCH_RETRY_ATTEMPTS : 1
+  const timeoutMs = isServer ? SERVER_FETCH_TIMEOUT_MS : FRONTEND_FETCH_TIMEOUT_MS
+
+  let attempt = 0
+  let lastError: unknown = null
+
+  while (attempt < maxAttempts) {
+    attempt += 1
+
+    try {
+      const response = await fetchWithTimeout(url, {
+        next: {
+          revalidate: 300,
+          tags: ["articles"],
+        },
+        headers: {
+          Accept: "application/json",
+        },
+      }, timeoutMs)
+
+      if (response.ok || !isServer || !isRetryableStatus(response.status) || attempt >= maxAttempts) {
+        return response
+      }
+    } catch (error) {
+      lastError = error
+      if (!isServer || attempt >= maxAttempts) {
+        throw error
+      }
+    }
+
+    await sleep(SERVER_ARTICLES_FETCH_RETRY_DELAY_MS)
+  }
+
+  if (lastError) {
+    throw lastError
+  }
+
+  throw new Error("Failed to fetch articles")
 }
 
 function parseMaybeJson<T>(value: unknown): T | null {
@@ -83,15 +138,7 @@ export async function getArticles(limit?: number, offset?: number): Promise<Arti
       url += `?${query}`
     }
 
-    const response = await fetchWithTimeout(url, {
-      next: {
-        revalidate: 300,
-        tags: ["articles"],
-      },
-      headers: {
-        Accept: "application/json",
-      },
-    })
+    const response = await fetchArticlesResponse(url)
 
     if (!response.ok) {
       console.error("API error while fetching articles:", response.status)

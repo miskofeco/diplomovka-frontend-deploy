@@ -107,9 +107,12 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
           </div>
 
           {filteredArticles.length === 0 && (
-            <p className="py-12 text-center text-zinc-600">
-              Nenašli sa žiadne články v tejto kategórii.
-            </p>
+            <div className="space-y-2 py-12 text-center text-zinc-600">
+              <p>Nenašli sa žiadne články v tejto kategórii.</p>
+              <p className="text-sm text-zinc-500">
+                Ak sa backend po neaktivite práve spúšťa, načítanie môže trvať niekoľko minút.
+              </p>
+            </div>
           )}
         </main>
       </ContentContainer>

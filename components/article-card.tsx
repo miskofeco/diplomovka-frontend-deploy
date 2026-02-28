@@ -28,7 +28,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
   return (
     <IntentPrefetchLink href={`/articles/${article.slug}`}>
       <div className="group relative flex h-full flex-col border-b border-r border-zinc-200 bg-white p-4 transition-colors">
-        <div className="relative mb-4 aspect-video">
+        <div className="relative mb-4 aspect-video overflow-hidden bg-zinc-200">
           <Image
             src={article.top_image || "/placeholder.jpg"}
             alt={article.title}

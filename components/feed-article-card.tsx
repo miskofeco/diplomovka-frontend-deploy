@@ -20,7 +20,7 @@ export function FeedArticleCard({ article, isWide = false }: FeedArticleCardProp
       href={`/articles/${article.slug}`}
       className="group flex h-full flex-col gap-4 md:flex-row"
     >
-      <div className={`relative ${isWide ? "md:w-1/3" : "w-full"} h-[120px]`}>
+      <div className={`relative ${isWide ? "md:w-1/3" : "w-full"} h-[120px] overflow-hidden bg-zinc-200`}>
         <Image
           src={article.top_image || "/placeholder.jpg"}
           alt={article.title}

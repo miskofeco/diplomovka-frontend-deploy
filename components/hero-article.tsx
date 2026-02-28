@@ -24,7 +24,7 @@ export function HeroArticle({ article }: { article: Article }) {
     <IntentPrefetchLink href={`/articles/${article.slug}`}>
       <div className="group border border-zinc-200 bg-white p-6 transition-colors">
         <div className="grid gap-8 md:grid-cols-2">
-          <div className="relative aspect-video">
+          <div className="relative aspect-video overflow-hidden bg-zinc-200">
             <Image
               src={article.top_image || "/placeholder.jpg"}
               alt={article.title}

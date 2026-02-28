@@ -1,4 +1,5 @@
 import { ContentContainer } from '@/components/content-container'
+import { BackendStartupNotice } from '@/components/backend-startup-notice'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export function ArticleCardSkeleton() {
@@ -62,6 +63,7 @@ export function HomePageSkeleton() {
 
       <ContentContainer>
         <main className="py-8">
+          <BackendStartupNotice />
           <Skeleton className="mb-6 h-10 w-72 rounded-none" />
           <HeroArticleSkeleton />
           <div className="mt-8 grid grid-cols-1 gap-0 md:grid-cols-2 lg:grid-cols-3">
@@ -88,6 +90,7 @@ export function CategoryPageSkeleton() {
       </div>
       <ContentContainer>
         <main className="py-8">
+          <BackendStartupNotice />
           <div className="grid grid-cols-1 gap-0 md:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 9 }).map((_, index) => (
               <ArticleCardSkeleton key={index} />

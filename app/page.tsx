@@ -7,6 +7,7 @@ import { ScrapeButton } from "@/components/scrape-button"
 import { ArticleCard } from "@/components/article-card"
 import { HeroArticle } from "@/components/hero-article"
 import { ContentContainer } from "@/components/content-container"
+import { BackendStartupNotice } from "@/components/backend-startup-notice"
 import { HomeLoadMore } from "@/components/home-load-more"
 import { ArticleCardSkeleton, HeroArticleSkeleton } from "@/components/skeleton-layouts"
 import { getArticles } from "@/lib/data"
@@ -18,6 +19,7 @@ function StreamingHomeContentFallback() {
   return (
     <ContentContainer>
       <main className="py-8">
+        <BackendStartupNotice />
         <h1 className="text-4xl py-8 border-t border-zinc-600">NAJNOVŠIE ČLÁNKY.</h1>
         <HeroArticleSkeleton />
         <h2 className="text-4xl pb-8 pt-10">OSTATNÉ ČLÁNKY.</h2>
@@ -45,9 +47,12 @@ async function LatestArticlesSection() {
           <div className="mb-8">
             <ScrapeButton />
           </div>
-          <p className="border border-zinc-200 p-8 text-zinc-600">
-            Články sa momentálne nepodarilo načítať. Skúste to prosím znova o chvíľu.
-          </p>
+          <div className="border border-zinc-200 p-8 text-zinc-600 space-y-3">
+            <p>Články sa momentálne nepodarilo načítať.</p>
+            <p className="text-zinc-700">
+              Backend sa môže po neaktivite ešte spúšťať. Skúste to prosím znova o chvíľu.
+            </p>
+          </div>
         </main>
       </ContentContainer>
     )
@@ -75,7 +80,7 @@ async function LatestArticlesSection() {
                 href={`/articles/${article.slug}`}
                 className="group flex h-full flex-col"
               >
-                <div className="relative mb-3 aspect-square w-full">
+                <div className="relative mb-3 aspect-square w-full overflow-hidden bg-zinc-200">
                   <Image
                     src={article.top_image || "/placeholder.jpg"}
                     alt={article.title}
