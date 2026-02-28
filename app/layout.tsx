@@ -1,18 +1,13 @@
-import type { Metadata } from 'next'
-import './globals.css'
-import { ThemeProvider } from '@/components/theme-provider'
-import dynamic from 'next/dynamic'
-import Script from 'next/script'
-
-// Dynamicky importovaný footer
-const Footer = dynamic(() => import('@/components/footer').then(mod => ({ default: mod.Footer })), {
-  ssr: true
-})
+import type { Metadata } from "next"
+import Script from "next/script"
+import { Footer } from "@/components/footer"
+import { ThemeProvider } from "@/components/theme-provider"
+import "./globals.css"
 
 export const metadata: Metadata = {
-  title: 'Pressence',
-  description: 'Vaše denné AI spravodajstvo',
-  icons: "/press-icon.png"
+  title: "Pressence",
+  description: "Vaše denné AI spravodajstvo",
+  icons: "/press-icon.png",
 }
 
 export default function RootLayout({
@@ -25,9 +20,12 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Text&family=Tinos:wght@400;700&display=swap" rel="stylesheet" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=DM+Serif+Text&family=Lexend:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
       </head>
-      <body className="flex flex-col min-h-screen">
+      <body className="flex min-h-screen flex-col">
         <ThemeProvider
           attribute="class"
           defaultTheme="light"
@@ -39,8 +37,7 @@ export default function RootLayout({
           </div>
           <Footer />
         </ThemeProvider>
-        
-        {/* Analytics script - načíta sa až po interakcii používateľa */}
+
         <Script
           src="https://example.com/analytics.js"
           strategy="lazyOnload"

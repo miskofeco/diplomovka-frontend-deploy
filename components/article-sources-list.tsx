@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { ChevronDown, ChevronUp, ExternalLink } from "lucide-react"
 import { Article } from "@/lib/types"
 import { useUrlOrientations } from "@/lib/hooks/useUrlOrientations"
 import { OrientationTag } from "@/components/orientation-tag"
+import { Skeleton } from "@/components/ui/skeleton"
 import { getDomainFromUrl } from "@/lib/utils"
 
 interface ArticleSourcesListProps {
@@ -37,11 +38,11 @@ function getOrientationColor(orientation: string): string {
 
 export function ArticleSourcesList({ article }: ArticleSourcesListProps) {
   const [expandedDomains, setExpandedDomains] = useState<{[key: string]: boolean}>({})
-  
-  // Get orientations for all URLs
-  const { orientations, isLoading } = useUrlOrientations(article.url)
+  const articleUrls = article.url || []
+  const { orientations, isLoading } = useUrlOrientations(articleUrls)
+  const hasOrientationData = Object.keys(orientations).length > 0
 
-  if (!article.url || article.url.length === 0) {
+  if (articleUrls.length === 0) {
     return (
       <div className="text-sm text-zinc-500 italic">
         Žiadne zdroje nie sú k dispozícii
@@ -49,16 +50,17 @@ export function ArticleSourcesList({ article }: ArticleSourcesListProps) {
     )
   }
 
-  // Group URLs by domain
-  const urlsByDomain: {[key: string]: string[]} = {}
-  
-  article.url.forEach((url: string) => {
-    const domain = getDomainFromUrl(url)
-    if (!urlsByDomain[domain]) {
-      urlsByDomain[domain] = []
-    }
-    urlsByDomain[domain].push(url)
-  })
+  const urlsByDomain = useMemo(() => {
+    const groupedUrls: {[key: string]: string[]} = {}
+    articleUrls.forEach((url: string) => {
+      const domain = getDomainFromUrl(url)
+      if (!groupedUrls[domain]) {
+        groupedUrls[domain] = []
+      }
+      groupedUrls[domain].push(url)
+    })
+    return groupedUrls
+  }, [articleUrls])
 
   // Toggle domain expansion
   const toggleDomain = (domain: string) => {
@@ -98,89 +100,102 @@ export function ArticleSourcesList({ article }: ArticleSourcesListProps) {
   return (
     <div className="space-y-3">
       {/* Overall summary of orientations */}
-      {!isLoading && Object.keys(orientations).length > 0 && (
+      {(isLoading || hasOrientationData) && (
         <div className="p-4 bg-zinc-50 rounded-lg border border-zinc-200">
-          <div className="text-sm font-medium text-zinc-700 mb-3">
-            Súhrn politických orientácií zdrojov:
+          <div className="text-sm font-medium text-zinc-700 mb-3 flex items-center justify-between">
+            <span>Súhrn politických orientácií zdrojov:</span>
+            {isLoading && (
+              <span className="text-xs font-normal text-zinc-500">Analyzujem zdroje...</span>
+            )}
           </div>
-          
-          {/* Horizontal orientation bar */}
-          {(() => {
-            const totalCounts = article.url.reduce((acc, url) => {
-              const orientation = orientations[url]?.orientation || 'neutral'
-              acc[orientation] = (acc[orientation] || 0) + 1
-              return acc
-            }, {} as Record<string, number>)
-            
-            const totalUrls = article.url.length
-            const sortedOrientations = Object.entries(totalCounts)
-              .sort(([,a], [,b]) => b - a)
-            
-            return (
-              <>
-                {/* Color bar */}
-                <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden mb-3 flex">
-                  {sortedOrientations.map(([orientation, count], index) => {
-                    const percentage = (count / totalUrls) * 100
-                    const colorClass = getOrientationColor(orientation)
-                    
-                    return (
-                      <div
-                        key={orientation}
-                        className={`${colorClass} h-full transition-all duration-300 relative group`}
-                        style={{ width: `${percentage}%` }}
-                        title={`${orientation}: ${count} zdrojov (${Math.round(percentage)}%)`}
-                      >
-                        {/* Tooltip on hover */}
-                        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-                          {orientation}: {Math.round(percentage)}%
-                        </div>
-                      </div>
-                    )
-                  })}
+
+          {(!hasOrientationData && isLoading) ? (
+            <div className="space-y-3">
+              <Skeleton className="h-4 w-full rounded-full" />
+              <div className="flex flex-wrap gap-2">
+                <Skeleton className="h-9 w-28 rounded-md" />
+                <Skeleton className="h-9 w-28 rounded-md" />
+                <Skeleton className="h-9 w-28 rounded-md" />
+              </div>
+            </div>
+          ) : (
+            <>
+              {(() => {
+                const totalCounts = articleUrls.reduce((acc, url) => {
+                  const orientation = orientations[url]?.orientation || 'neutral'
+                  acc[orientation] = (acc[orientation] || 0) + 1
+                  return acc
+                }, {} as Record<string, number>)
+
+                const totalUrls = articleUrls.length
+                const sortedOrientations = Object.entries(totalCounts)
+                  .sort(([,a], [,b]) => b - a)
+
+                return (
+                  <>
+                    {/* Color bar */}
+                    <div className="w-full h-4 bg-gray-200 rounded-full overflow-hidden mb-3 flex">
+                      {sortedOrientations.map(([orientation, count]) => {
+                        const percentage = (count / totalUrls) * 100
+                        const colorClass = getOrientationColor(orientation)
+
+                        return (
+                          <div
+                            key={orientation}
+                            className={`${colorClass} h-full transition-all duration-300 relative group`}
+                            style={{ width: `${percentage}%` }}
+                            title={`${orientation}: ${count} zdrojov (${Math.round(percentage)}%)`}
+                          >
+                            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                              {orientation}: {Math.round(percentage)}%
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+
+                    {/* Legend with counts */}
+                    <div className="flex flex-wrap gap-2">
+                      {sortedOrientations.map(([orientation, count]) => {
+                        const percentage = Math.round((count / totalUrls) * 100)
+                        return (
+                          <div key={orientation} className="flex items-center gap-2 bg-white px-3 py-2 rounded border">
+                            <OrientationTag orientation={orientation as any} size="sm" />
+                            <span className="text-sm text-zinc-600">
+                              {count} ({percentage}%)
+                            </span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </>
+                )
+              })()}
+
+              <div className="mt-3 pt-3 border-t border-zinc-200">
+                <div className="text-xs text-zinc-600 mb-2">
+                  Zdroje podľa domén: {Object.keys(urlsByDomain).length} {Object.keys(urlsByDomain).length === 1 ? 'doména' : 'domény'}
                 </div>
-                
-                {/* Legend with counts */}
                 <div className="flex flex-wrap gap-2">
-                  {sortedOrientations.map(([orientation, count]) => {
-                    const percentage = Math.round((count / totalUrls) * 100)
+                  {Object.entries(urlsByDomain).map(([domain, urls]) => {
+                    const domainData = getDomainOrientation(urls)
                     return (
-                      <div key={orientation} className="flex items-center gap-2 bg-white px-3 py-2 rounded border">
-                        <OrientationTag orientation={orientation as any} size="sm" />
-                        <span className="text-sm text-zinc-600">
-                          {count} ({percentage}%)
+                      <div key={domain} className="text-xs text-zinc-500 bg-white px-2 py-1 rounded border">
+                        <span className="font-medium">{domain}</span>
+                        <span className="ml-1">({urls.length})</span>
+                        <span className="ml-2">
+                          <OrientationTag 
+                            orientation={domainData.orientation as any} 
+                            size="sm"
+                          />
                         </span>
                       </div>
                     )
                   })}
                 </div>
-              </>
-            )
-          })()}
-          
-          {/* Show domains breakdown */}
-          <div className="mt-3 pt-3 border-t border-zinc-200">
-            <div className="text-xs text-zinc-600 mb-2">
-              Zdroje podľa domén: {Object.keys(urlsByDomain).length} {Object.keys(urlsByDomain).length === 1 ? 'doména' : 'domény'}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {Object.entries(urlsByDomain).map(([domain, urls]) => {
-                const domainData = getDomainOrientation(urls)
-                return (
-                  <div key={domain} className="text-xs text-zinc-500 bg-white px-2 py-1 rounded border">
-                    <span className="font-medium">{domain}</span>
-                    <span className="ml-1">({urls.length})</span>
-                    <span className="ml-2">
-                      <OrientationTag 
-                        orientation={domainData.orientation as any} 
-                        size="sm"
-                      />
-                    </span>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
+              </div>
+            </>
+          )}
         </div>
       )}
       
@@ -205,7 +220,7 @@ export function ArticleSourcesList({ article }: ArticleSourcesListProps) {
                     alt={domain}
                     className="w-6 h-6 rounded-sm flex-shrink-0"
                     onError={(e) => {
-                      e.currentTarget.style.display = 'none'
+                      e.currentTarget.style.visibility = 'hidden'
                     }}
                   />
                 )}
@@ -220,17 +235,23 @@ export function ArticleSourcesList({ article }: ArticleSourcesListProps) {
                   </div>
                   
                   {/* Show orientation breakdown for domains with multiple URLs */}
-                  {hasMultipleUrls && !isLoading && Object.keys(domainData.counts).length > 1 && (
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {Object.entries(domainData.counts).map(([orientation, count]) => (
-                        <span key={orientation} className="text-xs text-zinc-400">
-                          <OrientationTag 
-                            orientation={orientation as any} 
-                            size="sm" 
-                          />
-                          <span className="ml-1">({count})</span>
-                        </span>
-                      ))}
+                  {hasMultipleUrls && (
+                    <div className="min-h-6 mt-1">
+                      {(!hasOrientationData && isLoading) ? (
+                        <Skeleton className="h-5 w-28 rounded-full" />
+                      ) : Object.keys(domainData.counts).length > 1 ? (
+                        <div className="flex flex-wrap gap-1">
+                          {Object.entries(domainData.counts).map(([orientation, count]) => (
+                            <span key={orientation} className="text-xs text-zinc-400">
+                              <OrientationTag 
+                                orientation={orientation as any} 
+                                size="sm" 
+                              />
+                              <span className="ml-1">({count})</span>
+                            </span>
+                          ))}
+                        </div>
+                      ) : null}
                     </div>
                   )}
                 </div>
@@ -238,9 +259,7 @@ export function ArticleSourcesList({ article }: ArticleSourcesListProps) {
               
               <div className="flex items-center gap-2 flex-shrink-0">
                 {/* Domain orientation tag */}
-                {isLoading ? (
-                  <div className="animate-pulse bg-gray-200 h-6 w-16 rounded-full"></div>
-                ) : (
+                <div className={isLoading && !hasOrientationData ? "opacity-70" : ""}>
                   <OrientationTag 
                     orientation={domainData.orientation as any}
                     confidence={domainData.confidence}
@@ -249,7 +268,7 @@ export function ArticleSourcesList({ article }: ArticleSourcesListProps) {
                       : orientations[urls[0]]?.reasoning || "Nie je analyzované"
                     }
                   />
-                )}
+                </div>
                 
                 {hasMultipleUrls && (
                   <div className="text-zinc-500">
@@ -293,9 +312,7 @@ export function ArticleSourcesList({ article }: ArticleSourcesListProps) {
                       </a>
                       
                       <div className="flex-shrink-0">
-                        {isLoading ? (
-                          <div className="animate-pulse bg-gray-200 h-5 w-12 rounded-full"></div>
-                        ) : urlOrientation ? (
+                        {urlOrientation ? (
                           <OrientationTag 
                             orientation={urlOrientation.orientation}
                             confidence={urlOrientation.confidence}

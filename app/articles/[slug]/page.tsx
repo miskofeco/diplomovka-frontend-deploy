@@ -1,22 +1,14 @@
-import { Header } from "@/components/header"
-import { getArticleBySlug, getArticles } from "@/lib/data"
+import { Suspense } from "react"
 import Image from "next/image"
-import { notFound } from "next/navigation"
-import { createSlug } from "@/lib/utils"
-import "@/styles/globals.css"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
-import dynamic from 'next/dynamic'
-import { Suspense } from "react"
-
-// Dynamicky importované komponenty
-const ArticleSourcesList = dynamic(() => import('@/components/article-sources-list').then(mod => ({ default: mod.ArticleSourcesList })), {
-  loading: () => <div className="animate-pulse bg-coffee-50 h-20 w-full"></div>
-})
-
-const ArticleSuggestions = dynamic(() => import('@/components/article-suggestions').then(mod => ({ default: mod.ArticleSuggestions })), {
-  loading: () => <div className="animate-pulse bg-coffee-50 h-40 w-full"></div>
-})
+import { notFound } from "next/navigation"
+import { ArticleSuggestions } from "@/components/article-suggestions"
+import { ArticleSourcesList } from "@/components/article-sources-list"
+import { Header } from "@/components/header"
+import { Skeleton } from "@/components/ui/skeleton"
+import { getArticleBySlug, getArticles } from "@/lib/data"
+import { createSlug } from "@/lib/utils"
 
 export async function generateStaticParams() {
   const articles = await getArticles()
@@ -32,23 +24,23 @@ interface PageProps {
 }
 
 export default async function ArticlePage({ params }: PageProps) {
-  // Awaiting params to get the slug
   const { slug } = await params
-  
-  const article = await getArticleBySlug(slug)
+
+  const [article, fallbackPool] = await Promise.all([
+    getArticleBySlug(slug),
+    getArticles(30),
+  ])
 
   if (!article) {
     notFound()
   }
-  
-  // Získanie všetkých článkov pre odporúčania
-  const allArticles = await getArticles()
-  
-  // Filtrovanie článkov z rovnakej kategórie (as fallback)
-  const relatedArticles = allArticles.filter(a => 
-    a.category.toLowerCase() === article.category.toLowerCase() && 
-    a.slug !== article.slug
-  ).slice(0, 10)
+
+  const relatedArticles = fallbackPool
+    .filter((item) => (
+      item.category.toLowerCase() === article.category.toLowerCase() &&
+      item.slug !== article.slug
+    ))
+    .slice(0, 10)
 
   const factCheck = article.fact_check_results
   const factCheckFacts = Array.isArray(factCheck?.facts) ? factCheck.facts : []
@@ -64,35 +56,37 @@ export default async function ArticlePage({ params }: PageProps) {
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <Header />
-      
+
       <main className="container px-4 py-8 max-w-content flex-grow">
         <article className="max-w-content-narrow">
           <div className="mb-4">
-            <Link 
-              href="/" 
-              className="inline-flex items-center text-zinc-600 hover:underline underline-offset-4 hover:text-zinc-900 mb-4"
+            <Link
+              href="/"
+              className="inline-flex items-center mb-4 text-zinc-600 hover:text-zinc-900 hover:underline underline-offset-4"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Späť na domov
             </Link>
-            
-            <h1 className="text-3xl md:text-4xl text-zinc-900 mb-4">{article.title}</h1>
-            <div className="flex items-center gap-4 text-zinc-600 mb-4">
-              <span>{new Date(article.scraped_at).toLocaleString("sk-SK", {
-                year: 'numeric',
-                month: 'numeric', 
-                day: 'numeric',
-                hour: '2-digit', 
-                minute: '2-digit'
-              })}</span>
+
+            <h1 className="mb-4 text-3xl text-zinc-900 md:text-4xl">{article.title}</h1>
+            <div className="mb-4 flex items-center gap-4 text-zinc-600">
+              <span>
+                {new Date(article.scraped_at).toLocaleString("sk-SK", {
+                  year: "numeric",
+                  month: "numeric",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
               <span>•</span>
               <span>{article.category}</span>
             </div>
             <div className="flex flex-wrap gap-2">
               {article.tags?.map((tag: string, index: number) => (
                 <span
-                  key={index}
-                  className="inline-block text-sm px-3 py-1 bg-zinc-200 text-zinc-600"
+                  key={`${tag}-${index}`}
+                  className="inline-block bg-zinc-200 px-3 py-1 text-sm text-zinc-600"
                 >
                   {tag}
                 </span>
@@ -101,22 +95,24 @@ export default async function ArticlePage({ params }: PageProps) {
           </div>
 
           {article.top_image && (
-            <div className="mb-8 border-t pt-5 border-zinc-800">
-              <div className="relative w-full h-[50vw] md:h-[30vw]">
+            <div className="mb-8 border-t border-zinc-800 pt-5">
+              <div className="relative h-[50vw] w-full md:h-[30vw]">
                 <Image
                   src={article.top_image}
                   alt={article.title}
                   fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, 70vw"
                   className="object-cover"
                 />
               </div>
-              <div className="mt-2 text-sm text-zinc-500 flex">
+              <div className="mt-2 flex text-sm text-zinc-500">
                 <span className="whitespace-nowrap">Zdroj: </span>
-                <a 
-                  href={article.top_image} 
-                  target="_blank" 
+                <a
+                  href={article.top_image}
+                  target="_blank"
                   rel="noopener noreferrer"
-                  className="text-coffee-700 hover:underline truncate ml-1"
+                  className="ml-1 truncate text-coffee-700 hover:underline"
                   title={article.top_image}
                 >
                   {article.top_image}
@@ -124,19 +120,18 @@ export default async function ArticlePage({ params }: PageProps) {
               </div>
             </div>
           )}
-          
-          {/* Intro text in all capitals */}
-          <div className="max-w-none mb-6 font-bold">
+
+          <div className="mb-6 max-w-none font-bold">
             {article.intro}
           </div>
 
-          <div className="prose prose-zinc max-w-none mb-8">
+          <div className="prose prose-zinc mb-8 max-w-none">
             {article.content}
           </div>
 
           {showFactCheckSection && (
-            <section className="border-t border-zinc-800 pt-6 mt-8">
-              <h3 className="text-lg font-semibold mb-3 text-zinc-900">Overenie faktov</h3>
+            <section className="mt-8 border-t border-zinc-800 pt-6">
+              <h3 className="mb-3 text-lg font-semibold text-zinc-900">Overenie faktov</h3>
               {factCheck?.status && (
                 <div className="mb-4">
                   <span className={`inline-block text-sm px-3 py-1 ${statusBadgeClass}`}>
@@ -148,8 +143,8 @@ export default async function ArticlePage({ params }: PageProps) {
               {factCheckFacts.length > 0 && (
                 <div className="space-y-3">
                   {factCheckFacts.map((item, index) => (
-                    <div key={index} className="p-3 bg-zinc-50 border border-zinc-200">
-                      <p className="text-zinc-900 text-sm mb-1">{item.fact || "Fakt nie je dostupný"}</p>
+                    <div key={index} className="border border-zinc-200 bg-zinc-50 p-3">
+                      <p className="mb-1 text-sm text-zinc-900">{item.fact || "Fakt nie je dostupný"}</p>
                       {item.source_url ? (
                         <a
                           href={item.source_url}
@@ -169,14 +164,20 @@ export default async function ArticlePage({ params }: PageProps) {
             </section>
           )}
 
-          <div className="border-t border-zinc-800 pt-6 mt-8">
-            <h3 className="text-lg font-semibold mb-4 text-zinc-900">Zdroje článku:</h3>
+          <div className="mt-8 border-t border-zinc-800 pt-6">
+            <h3 className="mb-4 text-lg font-semibold text-zinc-900">Zdroje článku:</h3>
             <ArticleSourcesList article={article} />
           </div>
-          
-          {/* Odporúčané články */}
-          <Suspense fallback={<div className="animate-pulse bg-coffee-50 h-40 w-full mt-12"></div>}>
-            <ArticleSuggestions 
+
+          <Suspense
+            fallback={(
+              <div className="mt-12 border-t border-zinc-800 pt-6">
+                <Skeleton className="mb-4 h-6 w-40 rounded-none" />
+                <Skeleton className="h-40 w-full rounded-none" />
+              </div>
+            )}
+          >
+            <ArticleSuggestions
               currentArticleId={article.id}
               currentArticleSlug={article.slug}
               fallbackArticles={relatedArticles}
@@ -187,4 +188,3 @@ export default async function ArticlePage({ params }: PageProps) {
     </div>
   )
 }
-

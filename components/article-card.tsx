@@ -1,8 +1,6 @@
-"use client"
-
-import { Article } from "@/lib/types"
 import Image from "next/image"
-import Link from "next/link"
+import { IntentPrefetchLink } from "@/components/intent-prefetch-link"
+import { Article } from "@/lib/types"
 import { getDomainFromUrl } from "@/lib/utils"
 
 interface ArticleCardProps {
@@ -10,17 +8,15 @@ interface ArticleCardProps {
 }
 
 export function ArticleCard({ article }: ArticleCardProps) {
-  // Tags are already an array, no need to split
   const tags = article.tags || []
-  
-  // Get unique domains and favicons
-  const domains = article.url && article.url.length > 0 
-    ? [...new Set(article.url.map(url => getDomainFromUrl(url)).filter(Boolean))]
+  const domains = article.url && article.url.length > 0
+    ? [...new Set(article.url.map((url) => getDomainFromUrl(url)).filter(Boolean))]
     : []
-  
-  const favicons = domains.map(domain => 
-    domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=16` : ""
-  ).filter(Boolean)
+
+  const favicons = domains
+    .map((domain) => (domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=16` : ""))
+    .filter(Boolean)
+
   const factCheck = article.fact_check_results
   const isVerified = factCheck?.status === "Overene fakty"
   const factCheckBadgeSrc = isVerified ? "/verify_green.png" : "/delete.png"
@@ -30,18 +26,18 @@ export function ArticleCard({ article }: ArticleCardProps) {
     : "Článok nebol overený"
 
   return (
-    <Link href={`/articles/${article.slug}`}>
-      <div className="group bg-white relative border-b border-r border-zinc-200 p-4 transition-colors h-full flex flex-col">
-        <div className="relative aspect-video mb-4">
+    <IntentPrefetchLink href={`/articles/${article.slug}`}>
+      <div className="group relative flex h-full flex-col border-b border-r border-zinc-200 bg-white p-4 transition-colors">
+        <div className="relative mb-4 aspect-video">
           <Image
             src={article.top_image || "/placeholder.jpg"}
             alt={article.title}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover"
           />
         </div>
-        <div className="flex flex-col flex-grow">
-          {/* Category + fact-check status */}
+        <div className="flex flex-grow flex-col">
           <div className="mb-2 flex flex-wrap items-center gap-2">
             <span className="text-xs px-3 py-1 bg-coffee-700 text-white">
               {article.category}
@@ -55,44 +51,43 @@ export function ArticleCard({ article }: ArticleCardProps) {
               className="h-5 w-5 object-contain"
             />
           </div>
-          
-          {/* Time and source icons */}
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center">
-              <span className="text-xs text-zinc-500">
-                {new Date(article.scraped_at).toLocaleString("sk-SK", {
-                  year: 'numeric',
-                  month: 'numeric', 
-                  day: 'numeric',
-                  hour: '2-digit', 
-                  minute: '2-digit'
-                })}
-              </span>
-            </div>
+
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-xs text-zinc-500">
+              {new Date(article.scraped_at).toLocaleString("sk-SK", {
+                year: "numeric",
+                month: "numeric",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
+            </span>
             <div className="flex items-center gap-1">
               {favicons.map((favicon, index) => (
-                <img 
-                  key={index}
-                  src={favicon} 
+                <Image
+                  key={favicon + index}
+                  src={favicon}
                   alt={domains[index]}
-                  className="w-4 h-4"
                   title={domains[index]}
+                  width={16}
+                  height={16}
+                  className="h-4 w-4"
                 />
               ))}
             </div>
           </div>
-          
-          <h3 className="group-hover:underline underline-offset-4 text-xl font-semibold mb-2 text-zinc-900 line-clamp-2n border-b pb-2 border-zinc-800">
+
+          <h3 className="mb-2 border-b border-zinc-800 pb-2 text-xl font-semibold text-zinc-900 group-hover:underline underline-offset-4 break-words">
             {article.title}
           </h3>
-          <p className="text-zinc-600 mb-3 h-[4.5rem] line-clamp-3 overflow-hidden">
+          <p className="mb-3 h-[4.5rem] overflow-hidden text-zinc-600 line-clamp-3">
             {article.intro}
           </p>
-          <div className="flex flex-wrap gap-2 mt-auto">
+          <div className="mt-auto flex flex-wrap gap-2">
             {tags.map((tag, index) => (
               <span
-                key={index}
-                className="inline-block text-xs px-2 py-1 bg-zinc-200 text-zinc-800"
+                key={`${tag}-${index}`}
+                className="inline-block bg-zinc-200 px-2 py-1 text-xs text-zinc-800"
               >
                 {tag}
               </span>
@@ -100,6 +95,6 @@ export function ArticleCard({ article }: ArticleCardProps) {
           </div>
         </div>
       </div>
-    </Link>  
+    </IntentPrefetchLink>
   )
 }

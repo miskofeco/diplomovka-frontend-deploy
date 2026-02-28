@@ -1,8 +1,10 @@
-import { Article, FactCheckResults, SummaryAnnotations } from './types'
-import { createSlug } from "@/lib/utils"
 import { buildApiUrl } from "@/lib/api-url"
+import { createSlug } from "@/lib/utils"
+import { Article, FactCheckResults, SummaryAnnotations } from "./types"
 
 const FRONTEND_FETCH_TIMEOUT_MS = 15000
+let hasLoggedArticlesFetchError = false
+let hasLoggedArticleDetailsFetchError = false
 
 async function fetchWithTimeout(
   input: RequestInfo | URL,
@@ -23,133 +25,139 @@ function parseMaybeJson<T>(value: unknown): T | null {
   if (value === null || value === undefined) {
     return null
   }
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     try {
       return JSON.parse(value) as T
     } catch {
       return null
     }
   }
-  if (typeof value === 'object') {
+  if (typeof value === "object") {
     return value as T
   }
   return null
 }
 
+function normalizeArticle(article: any): Article {
+  return {
+    id: article.id || "",
+    title: article.title || "Untitled",
+    slug: article.slug || createSlug(article.title || "untitled"),
+    top_image: article.top_image || "",
+    intro: article.intro || "",
+    summary: article.summary || "",
+    content: article.content || article.summary || "",
+    url: Array.isArray(article.url) ? article.url : [article.url || ""],
+    category: article.category || "uncategorized",
+    tags: Array.isArray(article.tags) ? article.tags : article.tags ? [article.tags] : [],
+    scraped_at: article.scraped_at || new Date().toISOString(),
+    fact_check_results: parseMaybeJson<FactCheckResults>(article.fact_check_results),
+    summary_annotations: parseMaybeJson<SummaryAnnotations>(article.summary_annotations),
+  }
+}
+
+function ensureServerApiUrl(url: string): boolean {
+  if (typeof window === "undefined" && url.startsWith("/")) {
+    console.error("API base URL is not configured for server-side fetching.")
+    return false
+  }
+  return true
+}
+
 export async function getArticles(limit?: number, offset?: number): Promise<Article[]> {
   try {
     let url = buildApiUrl("/api/articles")
-    if (typeof window === "undefined" && url.startsWith("/")) {
-      console.error("API base URL is not configured for server-side fetching.")
+    if (!ensureServerApiUrl(url)) {
       return []
-    }
-    
-    // Add pagination parameters if provided
-    if (limit !== undefined || offset !== undefined) {
-      url += '?';
-      if (limit !== undefined) url += `limit=${limit}`;
-      if (limit !== undefined && offset !== undefined) url += '&';
-      if (offset !== undefined) url += `offset=${offset}`;
-    }
-    
-    console.log('Fetching articles from:', url);
-    
-    const res = await fetchWithTimeout(url, {
-      next: { 
-        revalidate: 300, // Revalidácia každých 5 minút
-        tags: ['articles']
-      },
-      headers: {
-        'Accept': 'application/json'
-      }
-    })
-    
-    if (!res.ok) {
-      console.error('API Error:', res.status, await res.text());
-      return [];
-    }
-    
-    const articles = await res.json()
-    
-    if (!Array.isArray(articles)) {
-      console.error('Unexpected API response:', articles);
-      return [];
     }
 
-    return articles.map((article: any) => ({
-      id: article.id || '',
-      title: article.title || 'Untitled',
-      slug: createSlug(article.title || 'untitled'),
-      top_image: article.top_image || null,
-      intro: article.intro || '',
-      summary: article.summary || '',
-      content: article.content || article.summary || '',
-      url: Array.isArray(article.url) ? article.url : [article.url || ''],
-      category: article.category || 'uncategorized',
-      tags: Array.isArray(article.tags) ? article.tags : article.tags ? [article.tags] : [],
-      scraped_at: article.scraped_at || new Date().toISOString(),
-      fact_check_results: parseMaybeJson<FactCheckResults>(article.fact_check_results),
-      summary_annotations: parseMaybeJson<SummaryAnnotations>(article.summary_annotations)
-    }))
-  } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
-      console.error('Failed to fetch articles: request timed out')
+    const search = new URLSearchParams()
+    if (limit !== undefined) {
+      search.set("limit", String(limit))
+    }
+    if (offset !== undefined) {
+      search.set("offset", String(offset))
+    }
+    const query = search.toString()
+    if (query) {
+      url += `?${query}`
+    }
+
+    const response = await fetchWithTimeout(url, {
+      next: {
+        revalidate: 300,
+        tags: ["articles"],
+      },
+      headers: {
+        Accept: "application/json",
+      },
+    })
+
+    if (!response.ok) {
+      console.error("API error while fetching articles:", response.status)
       return []
     }
-    console.error('Failed to fetch articles:', error)
+
+    const articles = await response.json()
+    if (!Array.isArray(articles)) {
+      return []
+    }
+
+    return articles.map(normalizeArticle)
+  } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      if (!hasLoggedArticlesFetchError) {
+        hasLoggedArticlesFetchError = true
+        console.error("Fetching articles timed out")
+      }
+      return []
+    }
+    if (!hasLoggedArticlesFetchError) {
+      hasLoggedArticlesFetchError = true
+      console.error("Failed to fetch articles:", error)
+    }
     return []
   }
 }
 
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
   try {
-    // First try to get from the articles list
-    const articles = await getArticles()
-    const foundArticle = articles.find(article => article.slug === slug)
-    
-    if (foundArticle) {
-      console.log('Found article with ID:', foundArticle.id)
-      return foundArticle
-    }
-    
-    // If not found, try the details endpoint
-    const detailsUrl = buildApiUrl(`/api/articles/${slug}/details`)
-    if (typeof window === "undefined" && detailsUrl.startsWith("/")) {
-      console.error("API base URL is not configured for server-side fetching.")
+    const detailsUrl = buildApiUrl(`/api/articles/${encodeURIComponent(slug)}/details`)
+    if (!ensureServerApiUrl(detailsUrl)) {
       return null
     }
 
-    const response = await fetchWithTimeout(detailsUrl)
-    if (response.ok) {
-      const article = await response.json()
-      console.log('Found article via details endpoint with ID:', article.id)
-      
-      // Transform to match Article interface
-      return {
-        id: article.id || '',
-        title: article.title || 'Untitled',
-        slug: slug,
-        top_image: article.top_image || '',
-        intro: article.intro || '',
-        summary: article.summary || '',
-        content: article.summary || '',
-        url: Array.isArray(article.url) ? article.url : [article.url || ''],
-        category: article.category || 'uncategorized',
-        tags: Array.isArray(article.tags) ? article.tags : article.tags ? [article.tags] : [],
-        scraped_at: article.scraped_at || new Date().toISOString(),
-        fact_check_results: parseMaybeJson<FactCheckResults>(article.fact_check_results),
-        summary_annotations: parseMaybeJson<SummaryAnnotations>(article.summary_annotations)
+    const response = await fetchWithTimeout(detailsUrl, {
+      next: {
+        revalidate: 300,
+        tags: ["articles", `article:${slug}`],
+      },
+      headers: {
+        Accept: "application/json",
+      },
+    })
+
+    if (!response.ok) {
+      if (response.status !== 404) {
+        console.error("API error while fetching article details:", response.status)
       }
-    }
-    
-    console.warn('Article not found for slug:', slug)
-    return null
-  } catch (error) {
-    if (error instanceof Error && error.name === "AbortError") {
-      console.error('Failed to fetch article by slug: request timed out')
       return null
     }
-    console.error('Failed to fetch article by slug:', error)
+
+    const article = await response.json()
+    return normalizeArticle({ ...article, slug })
+  } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      if (!hasLoggedArticleDetailsFetchError) {
+        hasLoggedArticleDetailsFetchError = true
+        console.error("Fetching article details timed out")
+      }
+      return null
+    }
+    if (!hasLoggedArticleDetailsFetchError) {
+      hasLoggedArticleDetailsFetchError = true
+      console.error("Failed to fetch article by slug:", error)
+    }
     return null
   }
 }

@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Text&family=Noto+Sans&family=Lexend:wght@300;400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -18,16 +16,16 @@
 
 @layer base {
   body {
-    font-family: 'Lexend', serif !important;
+    font-family: "Lexend", "Avenir Next", "Segoe UI", sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'DM Serif Text', serif !important;
+    font-family: "DM Serif Text", "Iowan Old Style", "Times New Roman", serif;
     font-weight: 400;
   }
 
   a {
-    font-family: 'Lexend', serif !important;
+    font-family: inherit;
   }
 }
 

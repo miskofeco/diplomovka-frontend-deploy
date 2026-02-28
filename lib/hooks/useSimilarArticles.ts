@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react'
 import { Article, FactCheckResults, SummaryAnnotations } from '@/lib/types'
 import { buildApiUrl } from "@/lib/api-url"
 
+const similarArticlesCache = new Map<string, Article[]>()
+const similarArticlesInFlight = new Map<string, Promise<Article[]>>()
+
 function parseMaybeJson<T>(value: unknown): T | null {
   if (value === null || value === undefined) return null
   if (typeof value === 'string') {
@@ -15,67 +18,101 @@ function parseMaybeJson<T>(value: unknown): T | null {
   return null
 }
 
+async function fetchSimilarArticlesById(articleId: string): Promise<Article[]> {
+  const existingRequest = similarArticlesInFlight.get(articleId)
+  if (existingRequest) {
+    return existingRequest
+  }
+
+  const request = (async () => {
+    const url = buildApiUrl(`/api/articles/${articleId}/similar`)
+    const response = await fetch(url)
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: Failed to fetch similar articles`)
+    }
+
+    const data = await response.json()
+
+    return data.map((article: any, index: number) => ({
+      id: article.id || `similar-${index}`,
+      title: article.title || 'Untitled',
+      slug: createSlug(article.title || `untitled-${index}`),
+      top_image: article.top_image || '',
+      intro: article.intro || '',
+      summary: article.summary || '',
+      content: article.summary || '',
+      url: Array.isArray(article.url) ? article.url : [article.url || ''],
+      category: article.category || 'uncategorized',
+      tags: Array.isArray(article.tags) ? article.tags : article.tags ? [article.tags] : [],
+      scraped_at: article.scraped_at || new Date().toISOString(),
+      fact_check_results: parseMaybeJson<FactCheckResults>(article.fact_check_results),
+      summary_annotations: parseMaybeJson<SummaryAnnotations>(article.summary_annotations)
+    })) as Article[]
+  })()
+
+  similarArticlesInFlight.set(articleId, request)
+
+  try {
+    const articles = await request
+    similarArticlesCache.set(articleId, articles)
+    return articles
+  } finally {
+    similarArticlesInFlight.delete(articleId)
+  }
+}
+
 export function useSimilarArticles(articleId: string | null) {
   const [similarArticles, setSimilarArticles] = useState<Article[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    console.log('useSimilarArticles called with articleId:', articleId)
-    
+    let isCancelled = false
+
     if (!articleId) {
-      console.log('No articleId provided, clearing similar articles')
       setSimilarArticles([])
+      setError(null)
+      setIsLoading(false)
       return
     }
 
-    const fetchSimilarArticles = async () => {
-      console.log('Starting to fetch similar articles for ID:', articleId)
+    const cachedArticles = similarArticlesCache.get(articleId)
+    if (cachedArticles) {
+      setSimilarArticles(cachedArticles)
+      setIsLoading(false)
+    } else {
       setIsLoading(true)
-      setError(null)
-
-      try {
-        const url = buildApiUrl(`/api/articles/${articleId}/similar`)
-        console.log('Fetching from URL:', url)
-        
-        const response = await fetch(url)
-        
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: Failed to fetch similar articles`)
-        }
-
-        const data = await response.json()
-        console.log('Received similar articles data:', data)
-        
-        // Transform the data to match Article interface
-        const transformedArticles: Article[] = data.map((article: any, index: number) => ({
-          id: article.id || `similar-${index}`,
-          title: article.title || 'Untitled',
-          slug: createSlug(article.title || `untitled-${index}`),
-          top_image: article.top_image || '',
-          intro: article.intro || '',
-          summary: article.summary || '',
-          content: article.summary || '',
-          url: Array.isArray(article.url) ? article.url : [article.url || ''],
-          category: article.category || 'uncategorized',
-          tags: Array.isArray(article.tags) ? article.tags : article.tags ? [article.tags] : [],
-          scraped_at: article.scraped_at || new Date().toISOString(),
-          fact_check_results: parseMaybeJson<FactCheckResults>(article.fact_check_results),
-          summary_annotations: parseMaybeJson<SummaryAnnotations>(article.summary_annotations)
-        }))
-
-        console.log('Transformed articles:', transformedArticles.length)
-        setSimilarArticles(transformedArticles)
-      } catch (err) {
-        console.error('Error fetching similar articles:', err)
-        setError(err instanceof Error ? err.message : 'Failed to fetch similar articles')
-        setSimilarArticles([])
-      } finally {
-        setIsLoading(false)
-      }
     }
+    setError(null)
 
-    fetchSimilarArticles()
+    fetchSimilarArticlesById(articleId)
+      .then((articles) => {
+        if (isCancelled) {
+          return
+        }
+        setSimilarArticles(articles)
+        setError(null)
+      })
+      .catch((err) => {
+        if (isCancelled) {
+          return
+        }
+        setError(err instanceof Error ? err.message : 'Failed to fetch similar articles')
+        if (!cachedArticles) {
+          setSimilarArticles([])
+        }
+      })
+      .finally(() => {
+        if (isCancelled) {
+          return
+        }
+        setIsLoading(false)
+      })
+
+    return () => {
+      isCancelled = true
+    }
   }, [articleId])
 
   return { similarArticles, isLoading, error }

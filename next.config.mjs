@@ -7,7 +7,6 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true, // Vypne optimalizáciu obrázkov pre externé zdroje
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
@@ -19,6 +18,15 @@ const nextConfig = {
         hostname: '**',
       },
     ],
+  },
+  async redirects() {
+    return [
+      {
+        source: '/my-feed',
+        destination: '/',
+        permanent: true,
+      },
+    ]
   },
   experimental: {
     optimizePackageImports: ['lucide-react', 'date-fns'],

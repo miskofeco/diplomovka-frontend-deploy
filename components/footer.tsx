@@ -1,6 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
-import { Coffee, Github } from "lucide-react"
+import { Github } from "lucide-react"
 import { ContentContainer } from "./content-container"
 
 export function Footer() {

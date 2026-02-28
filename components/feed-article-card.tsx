@@ -1,8 +1,6 @@
-"use client"
-
-import { Article } from "@/lib/types"
 import Image from "next/image"
-import Link from "next/link"
+import { IntentPrefetchLink } from "@/components/intent-prefetch-link"
+import { Article } from "@/lib/types"
 
 interface FeedArticleCardProps {
   article: Article
@@ -18,18 +16,19 @@ export function FeedArticleCard({ article, isWide = false }: FeedArticleCardProp
     : "Článok nebol overený"
 
   return (
-    <Link 
+    <IntentPrefetchLink
       href={`/articles/${article.slug}`}
-      className={`group flex flex-col md:flex-row gap-4 h-full`}
+      className="group flex h-full flex-col gap-4 md:flex-row"
     >
-      <div className={`relative ${isWide ? 'md:w-1/3' : 'w-full'} h-[120px]`}>
+      <div className={`relative ${isWide ? "md:w-1/3" : "w-full"} h-[120px]`}>
         <Image
           src={article.top_image || "/placeholder.jpg"}
           alt={article.title}
           fill
+          sizes={isWide ? "(max-width: 768px) 100vw, 33vw" : "(max-width: 768px) 100vw, 50vw"}
           className="object-cover"
         />
-        <div className="absolute top-2 right-2">
+        <div className="absolute right-2 top-2">
           <Image
             src={factCheckBadgeSrc}
             alt={factCheckBadgeAlt}
@@ -40,15 +39,17 @@ export function FeedArticleCard({ article, isWide = false }: FeedArticleCardProp
           />
         </div>
       </div>
-      <div className="flex flex-col flex-grow">
-        <h4 className="text-lg font-serif font-bold mb-2 group-hover:text-coffee-800 transition-colors min-h-[3rem] flex items-start">
+      <div className="flex flex-grow flex-col">
+        <h4 className="min-h-[3rem] text-lg font-serif font-bold mb-2 group-hover:text-coffee-800 transition-colors flex items-start">
           {article.title}
         </h4>
         {isWide && (
-          <p className="text-zinc-700 line-clamp-2 mb-2">{article.intro}</p>
+          <p className="mb-2 line-clamp-2 text-zinc-700">{article.intro}</p>
         )}
-        <p className="text-sm text-zinc-500 mt-auto">{article.category} • {new Date(article.scraped_at).toLocaleDateString("sk-SK")}</p>
+        <p className="mt-auto text-sm text-zinc-500">
+          {article.category} • {new Date(article.scraped_at).toLocaleDateString("sk-SK")}
+        </p>
       </div>
-    </Link>
+    </IntentPrefetchLink>
   )
 }

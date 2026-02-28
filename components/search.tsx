@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from 'react'
-import { Search as SearchIcon, X, Loader2, Settings, Brain } from 'lucide-react'
+import { Search as SearchIcon, X, Loader2, Brain } from 'lucide-react'
 import { useSearch } from '@/lib/hooks/useSearch'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -59,7 +59,6 @@ export function Search() {
     if (query) {
       search(query, !isAdvancedEnabled)
     }
-    console.log('Advanced search:', isAdvancedEnabled ? 'disabled' : 'enabled')
   }
 
   return (

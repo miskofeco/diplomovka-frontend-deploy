@@ -20,10 +20,10 @@ const config = {
     },
     extend: {
       fontFamily: {
-        sans: ['Aeonik', 'serif'],
-        serif: ['Aeonik', 'serif'],
-        heading: ['Aeonik', 'serif'],
-        body: ['Aeonik', 'serif'],
+        sans: ['Lexend', 'Avenir Next', 'Segoe UI', 'sans-serif'],
+        serif: ['DM Serif Text', 'Iowan Old Style', 'Times New Roman', 'serif'],
+        heading: ['DM Serif Text', 'Iowan Old Style', 'Times New Roman', 'serif'],
+        body: ['Lexend', 'Avenir Next', 'Segoe UI', 'sans-serif'],
       },
       spacing: {
         '2': '0.5rem',

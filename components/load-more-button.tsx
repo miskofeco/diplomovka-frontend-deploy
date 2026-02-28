@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button"
 import { Loader2, ChevronDown } from "lucide-react"
-import { useState } from "react"
 
 interface LoadMoreButtonProps {
   onLoadMore: () => Promise<void>
